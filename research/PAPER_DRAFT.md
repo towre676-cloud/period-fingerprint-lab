@@ -306,3 +306,103 @@ quantum periods uniquely determine all Fano varieties.
    space*, Proposition 2.3 (terminality criterion).
 3. Veneziale, *Fano Varieties and Machine Learning*,
    PhD thesis, Imperial College London (2024), §6.2.
+
+
+## Appendix A. Three-term collisions and sharp maximal-weight restrictions (November 6, 2026)
+
+The first exact three-supported-coefficient collision obtained by the new
+prime-valuation relation engine occurs with *largest individual weight*
+172 (not to be confused with minimum total weight, which remains open).
+The two weight multisets are
+
+```
+A = [3,3,3,3,5,8,8,12,22,32,34,85,107,162,172]
+B = [2,4,4,4,4,6,9,11,21,33,35,86,108,161,171]
+```
+
+Both have sum 659, 15 entries, and terminal quotient singularities.
+Their first 3 supported coefficients are exactly equal; the fourth
+coefficient ratio A/B is
+
+```
+65119987073340199 / 65119354660916775
+```
+
+so their full periods differ. The original factorial relations are
+stored as compressed signed-multiplicity lists, independently verified
+prime-by-prime, not as decimal approximations.
+
+**Exact maximal-weight obstruction.** The valuation matrix
+`V_3(M)` has columns indexed by candidate weights `1,...,M`,
+and rows recording total weight and the prime valuations
+`v_p((ma)!)` for `m=1,2,3`. Exact elimination modulo the
+prime 1000003 shows rank `171` at `M=171`; thus *no*
+nontrivial common-total-weight relation can use exclusively
+weights below 172. The explicit relation at 172 proves this
+maximal-weight threshold sharp even for terminal spaces.
+
+The W172 relation is a count-zero kernel vector in
+`V_3(188)`. Exact modular rank is 187 at M=188, so
+the rational kernel has dimension one and every such
+relation has zero coefficient-count sum. The second signed
+identity at maximum weight 189 has 471810 positive and
+471684 negative entries, a common total weight 27847032,
+and meets all 3 factorial identities. Adding 378 common
+unit weights gives terminal examples of dimensions
+472187 and 472061, differing by 126. Thus **189 is the
+minimal possible maximum individual weight for a
+dimension-changing three-coefficient collision**.
+
+A further signed relation at maximum weight 249 has
+117549 positive and 117548 negative entries, each with
+sum 9268001. Adding 498 common unit weights gives
+terminal examples of dimensions **118046 and 118045**,
+with total weight **9268499**. This yields an explicit
+three-coefficient terminal collision whose dimension
+difference is exactly one. No minimality of weight 249
+or of the overall total weight is claimed for this
+gap-one construction.
+
+All three integer relation lists and the standalone
+verifier are available at
+`research/k3_exact_relations.json` and
+`scripts/verify_k3_relations.py`. The verifier independently
+checks exact prime-valuation cancellations and modular
+rank bounds, and it directly checks all age inequalities
+for the two 14-dimensional examples.
+
+### A sharper terminal-padding lemma
+
+For any nonempty positive weight multiset with total weight H
+and maximum entry M, adjoining **2M unit weights** produces
+a terminal, well-formed weighted projective space. Put
+L=H+2M. If 2<=k<L/M, then no original weight wraps
+modulo L and the fractional age is precisely k. If
+k>=L/M, the added unit weights alone contribute
+2Mk/L>=2. Complementary ages give the upper bound
+N-2. This proves the claim without running enormous
+lists of quotient-age calculations and improves the
+crude 2H-padding construction used in Section 4.
+
+### Four-term obstruction and retracted exploratory claim
+
+Independent exact GF(2) elimination certifies full column rank
+for `V_4(1500)`. A correctly typed C++ finite-field
+implementation further proves full rank at maximum weight
+**1691 over F_65521**. Thus no distinct weight
+multisets with the same total weight and all individual
+weights <=1691 can agree on their first four supported
+coefficients, even without imposing terminality.
+
+The first modular dependence occurs at weight 1692
+over the tested field, but **no integer relation has been
+extracted or certified there**. An earlier exploratory
+large-prime implementation used 16-bit storage, producing
+an incorrect proposed threshold of 1929; that claim
+is withdrawn. The corrected check is
+`scripts/verify_k4_rank.cpp`. This distinction
+between a modular dependence and an exact rational
+factorial identity is indispensable.
+
+The full detailed proofs, evidence labels and caveats
+are in `research/K3_SHARP_WEIGHT_THRESHOLDS.md`.
