@@ -7,7 +7,9 @@ import json
 from .weights import WeightedProjective, terminal_report
 from .periods import fingerprint
 from .reconstruct import reconstruct_from_prefix
-from .certificates import collision_receipt, verify_receipt, receipt_json
+from .certificates import collision_receipt
+from .reconstruction_receipt import make_reconstruction_receipt
+from verify_receipt import verify as independent_verify
 from .search import collision_scan
 
 
@@ -40,6 +42,10 @@ def main(argv=None):
     cert.add_argument("--right", required=True)
     cert.add_argument("--matching", type=int, default=2)
 
+    rec = commands.add_parser("reconstruction-certificate", help="emit finite uniqueness receipt")
+    rec.add_argument("--total-weight", type=int, required=True)
+    rec.add_argument("--coefficients", required=True, help="comma-separated c_0,c_L,...")
+
     verify = commands.add_parser("verify", help="verify an external JSON certificate")
     verify.add_argument("path")
 
@@ -68,9 +74,12 @@ def main(argv=None):
     elif args.action == "certificate":
         result = collision_receipt(_space(args.left), _space(args.right),
                                    args.matching)
+    elif args.action == "reconstruction-certificate":
+        result = make_reconstruction_receipt(args.total_weight, [
+            int(s.strip()) for s in args.coefficients.split(",")])
     else:
         with open(args.path, encoding="utf-8") as stream:
-            result = verify_receipt(json.load(stream))
+            result = independent_verify(json.load(stream))
     print(json.dumps(result, indent=2, sort_keys=True))
     return result
 
