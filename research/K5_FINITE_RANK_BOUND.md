@@ -68,3 +68,59 @@ via the exact fractional-age criterion.
 There are no claims here of minimal total weight,
 minimal dimension, or all-Fano uniqueness. Mathematical
 priority and novelty remain unassessed.
+
+
+## Update: exact effective existence upper bound (November 6, 2026)
+
+The lower bound from modular rank now has a complement:
+**a distinct terminal same-dimensional K5 collision exists using only
+individual weights <=2,867,000**. This is an *existence* result,
+not an explicit integer witness.
+
+The new argument counts only the prime rows actually needed
+for each m rather than using five copies of pi(5M).
+Two independent Python sieve implementations and an independent
+segmented C++ sieve establish the exact counts
+
+```
+pi(2,867,000)  = 207,927
+pi(5,734,000)  = 395,799
+pi(8,601,000)  = 577,502
+pi(11,468,000) = 755,330
+pi(14,335,000) = 930,416
+```
+
+Their sum is 2,866,974. Including the total-weight row
+leaves at most 2,866,975 constraints on 2,867,000
+unknown signed multiplicities, so the rational nullity
+is at least 25. Even after imposing equality of the
+number of weights by an additional all-ones row, nullity
+remains at least 24. Nonzero rational relations clear to
+integer relations. The common padding of 5,734,000
+unit weights on each side makes the resulting weighted
+projective spaces well-formed and terminal.
+
+Thus for the minimum possible maximum individual weight
+of a nontrivial terminal five-prefix collision, we now know:
+
+```
+                 25,809 <= M5 <= 2,867,000.
+```
+
+The independent prime-field calculations over F_65521
+and F_65519 agree on the lower bound; their first modular
+dependence is at 25,809. That dependence remains *only
+modular* and must not be asserted to yield an integer witness.
+
+Full proof and independent replay:
+[research/K5_PRIMECOUNT_EXISTENCE_2867000.md](K5_PRIMECOUNT_EXISTENCE_2867000.md).
+
+```sh
+python scripts/verify_k5_primecount_existence.py
+g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/k5_primes scripts/verify_k5_primecount_segmented.cpp
+/tmp/k5_primes
+```
+
+The earlier qualitative bound of 41.1 billion from Dusart
+is superseded by the finite prime census. The new upper
+bound requires no external analytic prime-counting estimate.
