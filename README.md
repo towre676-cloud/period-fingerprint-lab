@@ -73,6 +73,35 @@ All novelty claims are deferred until relevant earlier mathematical
 literature is compared. Numerical searches have explicitly bounded
 domains and are not a general classification of Fano varieties.
 
+## New: exact four-coefficient terminal collision
+
+An exact integer relation supported on individual weights through **1692**
+makes the first **four** positive supported quantum-period coefficients
+identical for two different weighted-projective weight multisets. Their
+fifth coefficients differ, and the original multisets have different
+numbers of weights. Adding **3384 common unit weights** gives two
+well-formed **terminal** weighted projective spaces of *different dimensions*.
+
+This is **sharp in maximum individual weight**: an independently computed
+full-column-rank certificate modulo the prime 65521 excludes any
+nontrivial relation using only weights at most **1691**.
+The total weights and geometric dimensions of the explicit pair are
+very large and are **not** claimed minimal.
+
+The full **587-entry signed integer witness** is reconstructed from
+15 independent modular computations by Chinese remaindering and
+rational reconstruction, then verified by exact prime valuations for
+m=1,2,3,4,5. GitHub Actions publishes the resulting JSON as the
+`certified-k4-collision` artifact after successful verification.
+
+[Read the exact result and reproduction instructions](research/K4_EXACT_TERMINAL_COLLISION.md).
+
+```sh
+g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/extract_k4_mod scripts/extract_k4_mod.cpp
+# See the research note for the complete fifteen-prime loop.
+python scripts/reconstruct_k4.py /tmp/k4
+```
+
 ## New: terminal collisions through three coefficients and certified maximal-weight bounds
 
 The exact three-prefix research now includes three independently replayable
