@@ -6,7 +6,7 @@ import argparse
 import json
 from .weights import WeightedProjective, terminal_report
 from .periods import fingerprint
-from .reconstruct import reconstruct_from_prefix
+from .reconstruct import reconstruct_from_prefix, reconstruct_dense_prefix
 from .certificates import collision_receipt
 from .reconstruction_receipt import make_reconstruction_receipt
 from verify_receipt import verify as independent_verify
