@@ -29,6 +29,8 @@ def read_zenodo_rank1(path, expected_dim=None, require_terminal=True,
             raise ValueError(f"invalid literal on line {line_number}") from e
         if not isinstance(parsed,(list,tuple)):
             raise ValueError(f"expected one weight list on line {line_number}")
+        if any(type(a) is not int for a in parsed) or list(parsed) != sorted(parsed):
+            raise ValueError(f"weights are not canonical nondecreasing integers on line {line_number}")
         try:
             space=WeightedProjective.from_weights(tuple(parsed))
         except ValueError as e:
