@@ -2,7 +2,7 @@
 
 [![Exact period laboratory](https://github.com/towre676-cloud/period-fingerprint-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/towre676-cloud/period-fingerprint-lab/actions/workflows/tests.yml)
 
-**v0.2 development foundation — exact reconstruction and certificate prototype**, Python 3.11+ (standard library). A computational laboratory investigating which geometric properties can be deduced rigorously from finite segments of regularized quantum periods.
+**Research release candidate — finite reconstruction and terminal-collision certification**, Python 3.11+ (standard library). A computational laboratory investigating which geometric properties can be deduced rigorously from finite segments of regularized quantum periods.
 
 ## Exact mathematical core
 
@@ -40,6 +40,38 @@ Produce and replay a reconstruction receipt:
 python -m periodlab reconstruction-certificate --total-weight 3 --coefficients 1,6,90 > reconstruction.json
 python verify_receipt.py reconstruction.json
 ```
+
+## New research results (November 2026)
+
+We have now derived and independently computed three closely related
+results; see the [research status](research/STATUS_2026-11-05.md):
+
+1. **Sharp bounded terminal threshold (two supported coefficients):**
+   Exhaustive exact enumeration through total weight 51 finds no terminal
+   collision for smaller weights and exactly 77 two-space collision groups
+   at weight 51. All 77 pairs differ in dimension, and are obtained by
+   appending the same partition of 12 to a fixed base pair.
+   [Proof and classification](research/terminal_collision_51.md).
+2. **Explicit smallest terminal example:** the weight lists
+   `(1,1,1,1,1,5,5,12,24)` (dimension 8) and
+   `(2,2,2,2,3,3,12,25)` (dimension 7) agree in the first two
+   supported coefficients at degrees 51 and 102, but differ at degree 153.
+3. **Universal fixed-prefix ambiguity theorem:** for each finite K
+   there are distinct terminal well-formed weighted projective
+   spaces of a common total weight with the same first K positive
+   supported period coefficients. The construction uses exact
+   prime-valuation integer linear algebra, the prime number theorem,
+   and unit-weight padding. The proof **does not** show distinct
+   dimensions for every K.
+   [Read the proof](research/universal_finite_prefix_ambiguity.md).
+4. **Three-coefficient search:** no terminal three-supported-coefficient
+   collisions through total weight 70 in an exact C++ enumeration;
+   further independent replay and a larger frontier remain open.
+   [Scope](research/three_prefix_frontier.md).
+
+All novelty claims are deferred until relevant earlier mathematical
+literature is compared. Numerical searches have explicitly bounded
+domains and are not a general classification of Fano varieties.
 
 ## Exact finite-prefix collision
 
