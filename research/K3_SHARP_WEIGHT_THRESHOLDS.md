@@ -174,3 +174,38 @@ full quantum period fails to determine geometry.
 
 See `PAPER_DRAFT.md` and the primary quantum-period
 and terminality literature linked there.
+
+
+## Theorem C — three-coefficient ambiguity with dimension difference one
+
+The signed identity `K3-W249-dimension-one` in the same
+machine-readable certificate is a further exact relation with
+largest individual weight **249**. Its positive and negative
+multisets contain **117,549** and **117,548** weights, both
+totalling **9,268,001**. For m=1,2,3 all factorial-prime
+valuations cancel identically; they do not cancel at m=4.
+
+Appending 498 (=2×249) unit weights to each side invokes the
+terminal-padding lemma proved above. The resulting well-formed
+terminal weighted projective spaces have common total weight
+
+**9,268,499**
+
+and dimensions
+
+**118,046 and 118,045**.
+
+Thus, unlike the first maximal-weight-189 witness with dimension
+gap 126, there exists an explicit **dimension gap of just one**
+for three matching supported coefficients.
+
+This example is constructed as an integer linear combination
+of separately computed rational-kernel basis vectors, followed
+by lattice-basis reduction. The final signed relation is directly
+rechecked prime-by-prime by `scripts/verify_k3_relations.py`,
+independently of the search and reduction algorithms.
+
+The weight 249 is **not** claimed minimal for a dimension gap
+of one. The earlier weight 189 remains the sharp minimal
+maximal-weight threshold for *any* dimension-changing relation;
+whether a gap-one witness exists below weight 249 is open here.
