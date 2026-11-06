@@ -406,3 +406,75 @@ factorial identity is indispensable.
 
 The full detailed proofs, evidence labels and caveats
 are in `research/K3_SHARP_WEIGHT_THRESHOLDS.md`.
+
+
+## Appendix B. A sharp four-coefficient maximal-weight collision
+
+**Status: exact computational theorem, unrefereed.** Independently
+generated modular relations were reconstructed over the integers
+and checked prime-by-prime. The full signed vector is produced
+by the hosted GitHub Actions job `four-prefix-exact-collision`,
+with the generated certificate stored as a workflow artifact.
+
+There is a nonzero signed integer vector
+\(u=(u_1,\ldots,u_{1692})\) with 587 nonzero entries such that
+\[
+ \sum_{a=1}^{1692}a u_a=0,
+ \qquad
+ \sum_{a=1}^{1692}u_a\,v_p((ma)!)=0
+ \quad(1\le m\le4,\;p\le1692m).
+\]
+The fifth corresponding set of equalities fails for 318
+different primes. Taking the positive and negative parts
+gives distinct weight multisets with a common total weight
+\[
+ H=9161682624469356243039134091379944310083.
+\]
+Their weight counts are respectively
+\[
+ 27990950556264851229047371917314026508
+ \quad\text{and}\quad
+ 27991392711556946301081239744549080694.
+\]
+The numbers of entries differ, so the dimensions differ.
+
+Adding 3384 common unit weights gives terminal well-formed
+weighted projective spaces by the efficient padding lemma
+(Appendix A). Their common total weight becomes
+\[
+ 9161682624469356243039134091379944313467
+\]
+and the dimensions become
+\[
+ 27990950556264851229047371917314029891
+ \quad\text{and}\quad
+ 27991392711556946301081239744549084077.
+\]
+The first four supported regularized quantum-period
+coefficients agree exactly; the fifth supported
+coefficients differ.
+
+The bound on the **largest individual weight** is sharp.
+A separate F_65521 rank calculation establishes
+\(\operatorname{rank} V_4(1691)=1691\); any nontrivial
+integer relation involving weights at most 1691 is thus
+excluded. The integral witness at maximal weight 1692
+attains this obstruction.
+
+This sharpness is emphatically **not** a minimality
+statement for total weight, geometric dimension, or
+the number of weights. The displayed dimensions are
+immense because the primitive integer null vector has
+large multiplicities. It is mathematically valuable
+as a clear counterexample to any proposed fixed
+four-coefficient uniqueness law, but finding compact
+geometric representatives remains an important frontier.
+
+The source code for the fully reproducible certificate
+is `scripts/extract_k4_mod.cpp` and
+`scripts/reconstruct_k4.py`; details and command line
+are in `research/K4_EXACT_TERMINAL_COLLISION.md`.
+The earlier erroneous exploratory modular rank claim
+at 1929 is explicitly withdrawn, because it used
+truncated integer storage. Only the independently
+validated 1691/1692 threshold is retained.
