@@ -67,9 +67,11 @@ returns weights `[1,1,1]` and dimension 2.
 For a certificate that can be checked *without* the original algorithm,
 save the prefix, interpolated polynomial coefficients, the rational root
 multiplicities and reconstructed weight list, then independently
-evaluate `D_w` and the input series. The current code reconstructs
-and checks these facts but does not yet emit the fully self-contained
-interpolation certificate in machine-readable JSON.
+evaluate `D_w` and the input series. The current code exports the original supported coefficients, the recovered
+rational polynomial and the reconstructed weights in a JSON receipt. The
+separate top-level `verify_receipt.py` checks the reconstructed polynomial,
+all samples, terminality and uniqueness hypotheses without importing the
+discovery engine.
 
 ## Limitations
 
