@@ -15,10 +15,10 @@ test passes on current HEAD. This is not a release of the general engine.
 
 ## v0.3 — certificate strengthening (next)
 
-- A separate standalone verification program with no imports from
-  periodlab's discovery package.
-- Machine-readable interpolation certificates: input coefficients,
-  rational polynomial, root multiplicities, recovered weights.
+- Strengthen the existing independent standalone verifier with automatic
+  proof-obligation coverage reports.
+- Extend existing reconstruction JSON certificates with explicit root
+  multiplicities and integer-nullspace signatures.
 - Self-contained bounded census manifests and enumeration replay.
 - Constraint-solving search by factorial-prime valuations and
   combinatorial linear algebra; retain an independent enumerator.
