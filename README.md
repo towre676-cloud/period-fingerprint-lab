@@ -106,6 +106,37 @@ is **not** yet a genuine rational/integer collision.
 
 [Exact K=5 proof and reproduction](research/K5_FINITE_RANK_BOUND.md).
 
+## Latest K=5 result: rigorous existence without an explicit witness
+
+A finite exact-prime-count argument gives
+
+```
+25,809 <= minimal maximum individual weight for a K5 collision <= 2,867,000
+```
+
+The lower bound uses full-column-rank certificates over F_65521
+and independently F_65519. The **upper bound** counts every necessary
+factorial prime-valuation row for each of the first five supported
+coefficients. At individual-weight bound 2,867,000 there are at most
+2,866,975 rows for 2,867,000 columns, guaranteeing an integral
+relation. Adding a count-of-weights constraint leaves at least
+24 nullspace dimensions, so **distinct terminal examples of the
+same geometric dimension** are guaranteed. Common unit-weight
+padding proves terminality.
+
+This is an **existence proof**, not a fully specified K=5
+weight list or a demonstration of differing dimensions. In particular,
+the first modular dependence at 25,809 is not itself an
+integer identity.
+
+[Read the exact theorem and three independent sieve replays](research/K5_PRIMECOUNT_EXISTENCE_2867000.md).
+
+```sh
+python scripts/verify_k5_primecount_existence.py
+g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/k5_primes scripts/verify_k5_primecount_segmented.cpp
+/tmp/k5_primes
+```
+
 ## New: exact four-coefficient terminal collision
 
 An exact integer relation supported on individual weights through **1692**
