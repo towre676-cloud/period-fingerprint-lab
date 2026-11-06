@@ -73,6 +73,39 @@ All novelty claims are deferred until relevant earlier mathematical
 literature is compared. Numerical searches have explicitly bounded
 domains and are not a general classification of Fano varieties.
 
+## Latest exact results: compact K=4 witness and K=5 exclusion
+
+A new exact **terminal** collision has been constructed with matching
+first **four** supported period coefficients and **different dimensions**,
+without artificial unit-weight padding:
+
+| | Space A | Space B |
+|---|---:|---:|
+| Dimension | **12,621** | **12,622** |
+| Weight sum | 6,448,232 | 6,448,232 |
+| Number of weights | 12,622 | 12,623 |
+| Terminal-age failures | 0 | 0 |
+
+The 706 nonzero signed weight multiplicities are preserved as an exact
+[compressed vector](research/k4_compact_vector.b85) and independently
+checked by [verify_k4_compact.py](scripts/verify_k4_compact.py).
+Prime valuations match for all m=1,2,3,4 and differ at **367 primes**
+for m=5. All **6,448,229** relevant terminality ages per space are
+checked with integer arithmetic. This improves the previous explicit
+astronomical-size K=4 example by over 33 orders of magnitude in
+common weight sum. It is not proved minimal in dimension or total sum.
+
+[Mathematical scope and proof details](research/K4_COMPACT_TERMINAL_COLLISION.md).
+
+**New K=5 algebraic obstruction:** the prime-field valuation matrix
+has full rank for candidate individual weights through **25,808**.
+This excludes any nontrivial *common-total-weight* match of the first
+five supported coefficients where all individual weights are at most
+25,808. The characteristic-65521 first modular dependency at 25,809
+is **not** yet a genuine rational/integer collision.
+
+[Exact K=5 proof and reproduction](research/K5_FINITE_RANK_BOUND.md).
+
 ## New: exact four-coefficient terminal collision
 
 An exact integer relation supported on individual weights through **1692**
