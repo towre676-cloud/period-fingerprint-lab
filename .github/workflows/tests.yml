@@ -98,6 +98,7 @@ jobs:
       - name: CRT reconstruction and exact factorial-prime verification
         run: |
           python scripts/reconstruct_k4.py /tmp/k4
+          python scripts/verify_k4_witness.py /tmp/k4/k4_exact_relation.json
           python - <<'PY'
           import json
           x=json.load(open('/tmp/k4/k4_exact_relation.json'))
