@@ -9,4 +9,4 @@ from .toric2 import rank_two_coefficient
 
 __all__ = ["WeightedProjective", "terminal_report", "is_terminal",
            "coefficient", "coefficient_at_degree", "ratio", "fingerprint",
-           "reconstruct_weights", "reconstruct_from_prefix", "rank_two_coefficient"]
+           "reconstruct_weights", "reconstruct_from_prefix", "reconstruct_dense_prefix", "rank_two_coefficient"]
