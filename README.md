@@ -73,6 +73,38 @@ All novelty claims are deferred until relevant earlier mathematical
 literature is compared. Numerical searches have explicitly bounded
 domains and are not a general classification of Fano varieties.
 
+## New: terminal collisions through three coefficients and certified maximal-weight bounds
+
+The exact three-prefix research now includes three independently replayable
+signed factorial identities in
+[`research/k3_exact_relations.json`](research/k3_exact_relations.json):
+
+- **Maximum weight 172:** terminal dimensions 14 and 14, common total weight
+  659, with the first 3 supported coefficients equal and the fourth unequal.
+- **Maximum weight 189:** the **first possible maximum individual weight
+  for a dimension-changing** three-prefix relation; terminal dimensions
+  472,187 and 472,061 after common unit-weight padding.
+- **Maximum weight 249:** a compressed terminal collision with a
+  **dimension difference of exactly one**, dimensions 118,046 and 118,045.
+
+The sharp thresholds 172 and 189 are certified by independent modular
+rank computations and the explicit exact integer relations. These are
+**not** minimality statements for total weight or dimension.
+
+A separate exact finite-field proof shows that **four supported coefficients
+cannot collide when all individual weights are at most 1,691** and the
+total weights are equal. The first modular dependence at weight 1,692 is
+not yet an integral factorial identity.
+
+[Read the mathematical proofs and evidence limitations](research/K3_SHARP_WEIGHT_THRESHOLDS.md).
+Run the independent checkers:
+
+```sh
+python scripts/verify_k3_relations.py research/k3_exact_relations.json
+g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/weight_rank scripts/verify_k4_rank.cpp
+/tmp/weight_rank 1691 4
+```
+
 ## Exact finite-prefix collision
 
 Exhaustive enumeration of 201,882 well-formed weight multisets with total weight ≤ 40 found a first two-coefficient collision at total weight 39:
