@@ -20,7 +20,7 @@ class WeightsTests(unittest.TestCase):
         self.assertEqual(A.dimension, 7)
         self.assertEqual(B.dimension, 6)
         self.assertEqual(A.total_weight, 39)
-        for weights in ((2,4), (2,2,3), (1,), (-1,1), (1,1,2,2)):
+        for weights in ((2,4), (2,2,3), (1,), (-1,1), (2,2,2,3)):
             with self.assertRaises(ValueError):
                 WeightedProjective.from_weights(weights)
 
