@@ -60,3 +60,15 @@ jobs:
           cat /tmp/three-prefix-L70.log | tail -25
           ! grep -Eq '^L=[0-9]+.*collisions=[1-9]' /tmp/three-prefix-L70.log
           grep -Eq '^TOTAL .*collisions=0 different_dimension=0$' /tmp/three-prefix-L70.log
+
+  exact-lattice-boundaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Recompute signed three-prefix relations and sharp weight thresholds
+        run: python scripts/verify_k3_relations.py research/k3_exact_relations.json
+      - name: Independently certify four-prefix uniqueness for individual weights <= 1500
+        run: python scripts/verify_k4_bound.py --max-weight 1500 --prefix 4
