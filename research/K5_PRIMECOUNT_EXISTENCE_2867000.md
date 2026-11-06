@@ -151,3 +151,56 @@ and terminality. A dimension-changing example
 or a compact low-dimensional example would
 be stronger than the equal-dimension existence
 result proved here.
+
+
+## Sharpened exact row-count thresholds
+
+An additional **complete scan of the row-count inequality**
+for every integer M from 2 through 2,866,599 sharpens
+the results:
+
+- **M=2,866,589** is the first cap at which
+  `1+sum_m pi(m*M)<M`, forcing a nonzero integer
+  factorial relation. The exact prime counts are
+  `207897,395749,577427,755224,930290`,
+  summing to `2,866,587`. Including the total row
+  gives `2,866,588` rows against `2,866,589` columns.
+- **M=2,866,599** is the first cap at which
+  `2+sum_m pi(m*M)<M`. The exact prime counts are
+  `207897,395749,577429,755228,930293`,
+  summing to `2,866,596`. Total-weight and
+  weight-count rows give at most `2,866,598`
+  rows against `2,866,599` columns, so a
+  same-dimensional integer relation exists.
+
+These are the first bounds that the **simple raw row-count
+criterion** proves, not globally minimal weights for actual
+collisions. Because the argument above already proves
+terminality after common unit padding, the stronger
+statements are
+
+```
+25,809 <= M5 <= 2,866,589                      (any collision)
+25,809 <= M5_same_dimension <= 2,866,599       (same dimension)
+```
+
+The standalone C++ verifier computes all `pi(n)` through
+`5*2,866,599` by an exact sieve, checks the integer
+inequality **for every cap from 2 to 2,866,599**,
+and records the first successful cap in each class.
+
+```sh
+g++ -O3 -std=c++20 -Wall -Wextra \
+  -o /tmp/k5_threshold scripts/verify_k5_counting_threshold.cpp
+/tmp/k5_threshold
+```
+
+The original 2,867,000 example remains useful:
+its raw-count matrix has nullity at least **25**
+(and at least **24** after the dimension constraint).
+The sharper first-sufficiency bounds establish
+existence but only guarantee one kernel direction
+at the selected caps.
+
+An *explicit signed integer relation at these caps*
+has not been extracted.
