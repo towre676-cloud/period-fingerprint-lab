@@ -127,7 +127,7 @@ python scripts/verify_k3_relations.py research/k3_exact_relations.json
 ```
 
 The verifier does **not** import any periodlab discovery code.
-It tests both exact signed relations prime by prime, checks
+It tests all three exact signed relations prime by prime, checks
 all 657 age conditions of each 14-dimensional witness,
 checks the efficient-padding lemma's hypotheses for the
 dimension-changing witness, and independently recomputes
@@ -140,26 +140,43 @@ An explicit rational null vector proves the upper
 rank bound. The matching bounds certify the exact rank;
 no floating-point rank heuristic is involved.
 
-## Four coefficients — new negative result
+## Four coefficients — stronger negative result
 
 The separate `verify_k4_bound.py` constructs `V_4(1500)`
-over the field F₂ and finds **rank 1500** by exact binary
-column elimination. Therefore **no two distinct finite
-positive weight multisets with common total weight
-and weights at most 1500** have the same first four
-supported factorial-ratio quantum-period coefficients.
-This is stronger than a terminal-only no-collision
-statement, but says nothing about maximum weight
-1501 or higher.
+over F₂ and finds full rank **1500** by exact binary
+elimination.
+
+A further *correctly typed* C++ modular checker constructs
+`V_4(1691)` over the prime field F₆₅₅₂₁ and finds
+**rank 1691**. Therefore **no two different finite positive
+weight multisets with common total weight and individual
+weights at most 1691** can match their first four supported
+factorial-ratio quantum-period coefficients. The same
+conclusion holds *a fortiori* for terminal spaces.
+
+The first modular dependence over F₆₅₅₂₁ appears on adding
+weight 1692, but **this is not yet a rational or integer
+factorial identity**. A prior exploratory large-prime scan
+using 16-bit storage for much larger moduli was invalid;
+its claimed threshold of 1929 was retracted. The corrected
+checker uses wide integer intermediates and explicit
+modular reductions.
 
 ```sh
 python scripts/verify_k4_bound.py --max-weight 1500 --prefix 4
+g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/weight_rank scripts/verify_k4_rank.cpp
+/tmp/weight_rank 1691 4
+/tmp/weight_rank 1692 4
 ```
 
-The conditions, domain and exact arithmetic are important:
-none of these results proves that four coefficients
-determine an arbitrary Fano variety or that the
-full quantum period fails to determine geometry.
+The next open task is to determine whether the modular
+dependence at 1692 lifts to a genuine rational relation,
+and to construct a fourth-prefix terminal collision.
+
+The conditions and domain matter: none of these results
+proves that four coefficients determine an arbitrary
+Fano variety, or that the full quantum period fails
+to determine geometry.
 
 ## Evidence grading
 
