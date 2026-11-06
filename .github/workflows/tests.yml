@@ -78,3 +78,37 @@ jobs:
         run: |
           /tmp/weight_rank 1691 4
           /tmp/weight_rank 1692 4
+
+  four-prefix-exact-collision:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Compile modular rational-kernel extractor
+        run: g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/extract_k4_mod scripts/extract_k4_mod.cpp
+      - name: Obtain fifteen independent prime-field residues
+        run: |
+          mkdir -p /tmp/k4
+          for p in 1000000007 1000000009 1000000021 1000000033 1000000087 1000000093 1000000097 1000000103 1000000123 1000000181 1000000207 1000000223 1000000241 1000000271 1000000289; do
+            /tmp/extract_k4_mod "$p" > "/tmp/k4/residue_${p}.txt"
+          done
+      - name: CRT reconstruction and exact factorial-prime verification
+        run: |
+          python scripts/reconstruct_k4.py /tmp/k4
+          python - <<'PY'
+          import json
+          x=json.load(open('/tmp/k4/k4_exact_relation.json'))
+          assert x['max_weight']==1692
+          assert len(x['relation'])==587
+          assert x['fifth_mismatch_prime_count']==318
+          assert x['terminal_total_weight']==9161682624469356243039134091379944313467
+          assert x['terminal_dimensions']==[27990950556264851229047371917314029891,27991392711556946301081239744549084077]
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: certified-k4-collision
+          path: /tmp/k4/k4_exact_relation.json
+          retention-days: 90
