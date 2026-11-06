@@ -8,7 +8,7 @@
 
 - Weighted projective spaces: canonical weight multisets, well-formedness and exact terminal-singularity tests, supported factorial-ratio coefficients, rational recurrences.
 - **Constructive reconstruction theorem:** Given the total weight `L=sum(weights)`, the first **L** supported period coefficients uniquely determine the full weight multiset, not just dimension. With the entire ordinary zero-inclusive period prefix through degree `L(L-1)`, the support step `L` can itself be recovered. See [proof](docs/FINITE_RECONSTRUCTION.md). This is an elementary derivation; its novelty has **not** been established.
-- Bounded exhaustive collision census, explicit finite-prefix counterexamples, first distinguishing degrees. An independent census replayer confirms **158,816 terminal well-formed spaces and zero two-prefix collisions through total weight 40**; see [finite census](docs/TERMINAL_CENSUS.md).
+- Bounded exhaustive collision census, explicit finite-prefix counterexamples, first distinguishing degrees. An independent census replayer confirms **425,291 terminal well-formed spaces and zero two-prefix collisions through total weight 45**; see [finite census](docs/TERMINAL_CENSUS.md).
 - Exact prime-valuation integer-relation search through rational nullspace computations; conditional collision witnesses, not an all-K existence theorem.
 - [External dataset adapter](docs/PUBLISHED_DATA.md) for the published 150,000 terminal WPS records (full external audit pending).
 - JSON collision and unique-reconstruction receipts checked by an **independent standalone validator** (`verify_receipt.py`).
@@ -23,7 +23,7 @@ python -m periodlab analyze --weights 1,1,1,2 --count 6
 python -m periodlab reconstruct --total-weight 3 --coefficients 1,6,90
 python -m periodlab search --max-sum 40 --prefix 2 --different-dimensions
 python -m periodlab search --max-sum 30 --prefix 2 --terminal-only
-python verify_census.py --max-sum 40 --prefix 2 --expect-well-formed 201882 --expect-terminal 158816 --expect-collisions 0 > terminal-census.json
+python verify_census.py --max-sum 45 --prefix 2 --expect-well-formed 513020 --expect-terminal 425291 --expect-collisions 0 > terminal-census.json
 python -m periodlab.server --port 8765
 ```
 
