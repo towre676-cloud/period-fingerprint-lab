@@ -111,7 +111,7 @@ def main(path):
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     assert data["schema"] == "periodlab/k3-relations/v1"
     records = {x["id"]: x for x in data["relations"]}
-    assert set(records) == {"K3-W172", "K3-W189-dimension"}
+    assert set(records) == {"K3-W172", "K3-W189-dimension", "K3-W249-dimension-one"}
     outcomes = [verify_relation(x) for x in data["relations"]]
     # Rational rank at 171 is exactly 171 by its F_p minor.
     # At 188 the W172 relation gives rank <=187, and modular rank
@@ -124,6 +124,7 @@ def main(path):
     assert rank == {"171":171, "172":171, "188":187, "189":187}
     assert sum(c for _, c in records["K3-W172"]["signed_multiplicities"]) == 0
     assert sum(c for _, c in records["K3-W189-dimension"]["signed_multiplicities"]) == 126
+    assert sum(c for _, c in records["K3-W249-dimension-one"]["signed_multiplicities"]) == 1
     print(json.dumps({"status":"PASS", "K":3,
         "smallest_max_weight_any_collision":172,
         "smallest_max_weight_different_dimension":189,
