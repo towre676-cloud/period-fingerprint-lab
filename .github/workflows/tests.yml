@@ -70,5 +70,11 @@ jobs:
           python-version: '3.13'
       - name: Recompute signed three-prefix relations and sharp weight thresholds
         run: python scripts/verify_k3_relations.py research/k3_exact_relations.json
-      - name: Independently certify four-prefix uniqueness for individual weights <= 1500
+      - name: Independently certify four-prefix uniqueness over F2 through max weight 1500
         run: python scripts/verify_k4_bound.py --max-weight 1500 --prefix 4
+      - name: Compile corrected-width modular rank checker
+        run: g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/weight_rank scripts/verify_k4_rank.cpp
+      - name: Prove four-prefix rational independence through max weight 1691
+        run: |
+          /tmp/weight_rank 1691 4
+          /tmp/weight_rank 1692 4
