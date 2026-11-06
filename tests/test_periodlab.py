@@ -79,6 +79,12 @@ class CertificateTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             verify_receipt(receipt)
 
+    def test_terminal_only_bounded_census(self):
+        # Fully specified computation; does not assert global uniqueness.
+        result = collision_scan(40, prefix=2, terminal_only=True)
+        self.assertEqual(result["spaces_examined"], 158816)
+        self.assertEqual(len(result["collisions"]), 0)
+
     def test_bounded_census(self):
         result = collision_scan(40, prefix=2, only_dim_mismatch=True)
         self.assertEqual(result["spaces_examined"], 201882)
