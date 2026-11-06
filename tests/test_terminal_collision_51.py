@@ -20,6 +20,16 @@ def partitions(n, minimum=1):
 
 
 class TerminalCollisionTests(unittest.TestCase):
+    def test_smallest_one_coefficient_terminal_example(self):
+        left=WeightedProjective.from_weights((1,1,1,1,1,4))
+        right=WeightedProjective.from_weights((1,1,2,2,3))
+        self.assertTrue(is_terminal(left))
+        self.assertTrue(is_terminal(right))
+        self.assertEqual((left.dimension,right.dimension),(5,4))
+        self.assertEqual(left.total_weight,9)
+        self.assertEqual(coefficient(left,1),coefficient(right,1))
+        self.assertNotEqual(coefficient(left,2),coefficient(right,2))
+
     def test_primitive_denominator_identity(self):
         for m in (1,2):
             lhs=1
