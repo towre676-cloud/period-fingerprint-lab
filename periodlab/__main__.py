@@ -30,6 +30,9 @@ def main(argv=None):
     reconstruct.add_argument("--coefficients", required=True,
                              help="comma-separated c_0,c_L,... including 1")
 
+    dense = commands.add_parser("reconstruct-dense", help="recover weights from full degree coefficient JSON file")
+    dense.add_argument("path",help="JSON array c0,...,cD (including all zero entries)")
+
     search = commands.add_parser("search", help="bounded collision census")
     search.add_argument("--max-sum", type=int, default=40)
     search.add_argument("--prefix", type=int, default=2)
