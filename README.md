@@ -9,6 +9,8 @@
 - Weighted projective spaces: canonical weight multisets, well-formedness and exact terminal-singularity tests, supported factorial-ratio coefficients, rational recurrences.
 - **Constructive reconstruction theorem:** Given the total weight `L=sum(weights)`, the first **L** supported period coefficients uniquely determine the full weight multiset, not just dimension. See [proof](docs/FINITE_RECONSTRUCTION.md). This is an elementary derivation; its novelty has **not** been established.
 - Bounded exhaustive collision census, explicit finite-prefix counterexamples, first distinguishing degrees.
+- Exact prime-valuation integer-relation search through rational nullspace computations; conditional collision witnesses, not an all-K existence theorem.
+- [External dataset adapter](docs/PUBLISHED_DATA.md) for the published 150,000 terminal WPS records (full external audit pending).
 - JSON collision and unique-reconstruction receipts checked by an **independent standalone validator** (`verify_receipt.py`).
 - A limited nonnegative-rank-two charge-model coefficient generator, benchmarked on `P¹ × P¹`.
 - A local [browser explorer](web/index.html) using BigInt, no dependencies or server.
