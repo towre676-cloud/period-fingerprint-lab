@@ -113,3 +113,17 @@ jobs:
           name: certified-k4-collision
           path: /tmp/k4/k4_exact_relation.json
           retention-days: 90
+
+  five-prefix-rank-bound:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile independent exact finite-field checkers
+        run: |
+          g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/k5_gf2 scripts/verify_k5_gf2.cpp
+          g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/k5_modp scripts/verify_k5_modp.cpp
+      - name: Binary rank full through maximum weight 25626
+        run: /tmp/k5_gf2 25627 5
+      - name: Prime-field rank full through maximum weight 25808
+        run: /tmp/k5_modp 25809 5
