@@ -1,13 +1,24 @@
-name: Exact arithmetic tests
+name: Exact period laboratory
 on:
   push:
   pull_request:
 jobs:
   unittest:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - run: python -m unittest discover -s tests -v
+          python-version: ${{ matrix.python-version }}
+      - name: Run all exact tests
+        run: python -m unittest discover -s tests -v
+      - name: Smoke test CLI
+        run: |
+          python -m periodlab analyze --weights 1,1,1,2 --count 4
+          python -m periodlab reconstruct --total-weight 3 --coefficients 1,6,90
+          python -m periodlab search --max-sum 12 --prefix 2
+          python -m periodlab certificate --left 1,1,1,1,1,5,5,24 --right 2,2,2,2,3,3,25 --matching 2 > /tmp/fingerprint-receipt.json
+          python -m periodlab verify /tmp/fingerprint-receipt.json
