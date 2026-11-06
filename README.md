@@ -1,67 +1,69 @@
 # Period Fingerprint Laboratory
 
-An exact, reproducible investigation of what a finite list of regularized
-quantum-period coefficients can and cannot determine about the dimension
-of a weighted projective space.
+[![Exact period laboratory](https://github.com/towre676-cloud/period-fingerprint-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/towre676-cloud/period-fingerprint-lab/actions/workflows/tests.yml)
+
+**v0.2 — exact reconstruction and certificate prototype**, Python 3.11+ (standard library). A computational laboratory investigating which geometric properties can be deduced rigorously from finite segments of regularized quantum periods.
+
+## Exact mathematical core
+
+- Weighted projective spaces: canonical weight multisets, well-formedness and exact terminal-singularity tests, supported factorial-ratio coefficients, rational recurrences.
+- **Constructive reconstruction theorem:** Given the total weight `L=sum(weights)`, the first **L** supported period coefficients uniquely determine the full weight multiset, not just dimension. See [proof](docs/FINITE_RECONSTRUCTION.md). This is an elementary derivation; its novelty has **not** been established.
+- Bounded exhaustive collision census, explicit finite-prefix counterexamples, first distinguishing degrees.
+- JSON collision and unique-reconstruction receipts checked by an **independent standalone validator** (`verify_receipt.py`).
+- A limited nonnegative-rank-two charge-model coefficient generator, benchmarked on `P¹ × P¹`.
+- A local [browser explorer](web/index.html) using BigInt, no dependencies or server.
 
 ## Quick start
 
-Python 3.11+; no third-party packages:
-
 ```sh
-python period_fingerprint_demo.py
-python period_fingerprint_demo.py --skip-search
 python -m unittest discover -s tests -v
+python -m periodlab analyze --weights 1,1,1,2 --count 6
+python -m periodlab reconstruct --total-weight 3 --coefficients 1,6,90
+python -m periodlab search --max-sum 40 --prefix 2 --different-dimensions
+python -m periodlab search --max-sum 30 --prefix 2 --terminal-only
 ```
 
-The default run enumerates **201,882** well-formed weight multisets with
-total weight at most 40 (within the tested search convention), checking
-their first two nonzero period coefficients exactly. Its first collision
-occurs at total weight 39:
+Produce and replay a collision certificate:
 
-- A = (1,1,1,1,1,5,5,24), weighted-projective dimension 7
-- B = (2,2,2,2,3,3,25), weighted-projective dimension 6
+```sh
+python -m periodlab certificate --left 1,1,1,1,1,5,5,24 --right 2,2,2,2,3,3,25 --matching 2 > collision.json
+python verify_receipt.py collision.json
+```
 
-They share the coefficients at degrees 39 and 78, but **differ at degree 117**,
-with exact coefficient ratio A/B = 1080400/1002001.
+Produce and replay a reconstruction receipt:
 
-For weights `a = (a₁, ..., a_N)` and `L = sum(a)`, the source-dependent
-weighted-projective period formula used is
+```sh
+python -m periodlab reconstruction-certificate --total-weight 3 --coefficients 1,6,90 > reconstruction.json
+python verify_receipt.py reconstruction.json
+```
 
-`c_(L*m) = (L*m)! / product_i (a_i*m)!`, and all off-lattice coefficients
-are zero. Consequently `dim = N-1`. The prototype also checks exact
-successive-coefficient ratios and the limiting dimension estimator
-based on second differences of logarithms.
+## Exact finite-prefix collision
 
-## Scope, caveats, and evidence
+Exhaustive enumeration of 201,882 well-formed weight multisets with total weight ≤ 40 found a first two-coefficient collision at total weight 39:
 
-This is a computational observation about finite truncations within the
-specified class and search bound, **not** a demonstrated novel theorem.
-The asymptotic dimension-recovery framework and broad period-fingerprint
-research predate this project; see Coates–Kasprzyk–Veneziale,
-*Machine learning the dimension of a Fano variety*,
-Nature Communications 14 (2023), DOI
-https://doi.org/10.1038/s41467-023-41157-1 .
+| Space | Weights | Dimension |
+|---|---|---|
+| A | `1,1,1,1,1,5,5,24` | 7 |
+| B | `2,2,2,2,3,3,25` | 6 |
 
-This code does **not** reconstruct arbitrary Fano varieties, prove
-birational/isomorphism classification, certify terminal singularities,
-or identify these quantum periods with annular-period local systems.
-The census is finite and the minimum-weight claim refers only to the
-precise enumeration assumptions used in the script.
+Both have identical supported coefficients at degrees 39 and 78. At degree 117 the exact ratio A/B is **1080400/1002001**. Both spaces are **nonterminal**: this does not establish a counterexample inside the terminal weighted-projective subclass.
 
-## Development direction
+The census is finite and its exclusion scope is exactly the set defined in the search implementation. A pairwise collision receipt proves the reported equality and difference, **not** the exhaustiveness or uniqueness of the search.
 
-1. Export machine-readable collision certificates (weights, coefficients,
-   prime-valuation equalities, first distinguishing degree).
-2. Extend exact collision searches to longer coefficient prefixes and
-   bounded weights, with reproducible checkpoints.
-3. Prove finite-prefix obstruction theorems and investigate which additional
-   geometric restrictions restore dimension identifiability.
-4. Implement independent coefficient generation and exact rational
-   recurrence certificates.
-5. Compare against published Fano period datasets only after recording
-   identity, provenance, and admissible singularity classes.
+## What has not been solved
 
-Historical inspiration: March and April 2024 research conversations recovered
-in the excavation. Their prior assistant-produced equations are not accepted
-as proofs.
+This is not general reconstruction of Fano varieties; it does not prove or disprove the full-period uniqueness conjecture. It does not validate arbitrary rank-two charge matrices as projective fans, claim terminality for the example above, or identify quantum periods with other geometric periods. The local browser is a demonstration, not an independent scientific proof assistant. Sources and the evidence classification appear in [Evidence and Scope](docs/EVIDENCE_AND_SCOPE.md).
+
+## Roadmap
+
+See [the complete staged plan](docs/ROADMAP.md). Priorities are stronger independent exclusion certificates; datasets with integrity manifests and provenance; toric fan validation; additional period-generation methods; and effective uniqueness thresholds for restricted families.
+
+## Mathematical literature
+
+Coates, Kasprzyk and Veneziale, *Machine learning the dimension of a Fano variety*, Nature Communications **14** (2023), 5526. [DOI](https://doi.org/10.1038/s41467-023-41157-1).
+
+Kasprzyk, *Classifying terminal weighted projective space*, exact terminality criterion, [source](https://kasprzyk.work/research/pdf/Terminal_Wps.pdf).
+
+The project was inspired by 2023–2024 mathematical conversations recovered in a separate research excavation. No personal historical chat data are published in this repository.
+
+MIT-licensed software.
