@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><title>Period Fingerprint Lab | Exact Explorer</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,Arial,sans-serif;color:#ecf3f6;background:#0b1119}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% -10%,#193e4b 0%,#0b1119 50%);min-height:100vh}
+header,main,footer{max-width:1100px;margin:auto;padding:0 24px}
+header{padding-top:52px}small,.muted{color:#99abb7}.eyebrow{color:#6be4cc;text-transform:uppercase;letter-spacing:.18em;font-size:.75rem;font-weight:750}
+h1{font-size:clamp(2rem,5vw,3.6rem);margin:10px 0 12px;letter-spacing:-.045em}
+.subtitle{font-size:1.05rem;line-height:1.65;max-width:760px;color:#acbdc8}
+main{padding-top:25px;padding-bottom:45px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.card,.panel{background:rgba(19,30,42,.9);border:1px solid #304252;border-radius:18px;padding:22px}
+label{display:block;color:#b8cbd3;font-size:.84rem;font-weight:650;margin-bottom:9px}
+input,select,button{font:inherit}
+input,select{width:100%;border:1px solid #526676;background:#0e1923;color:#fff;padding:13px;border-radius:9px}
+input:focus-visible,button:focus-visible{outline:3px solid #65e0c7;outline-offset:2px}
+button{cursor:pointer;border:0;color:#09211e;background:#62dfc5;border-radius:10px;font-weight:750;padding:12px 20px}
+button:hover{background:#9beedc}
+.rule{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:25px 0 14px;flex-wrap:wrap}
+.tag{font-size:.78rem;border:1px solid #435563;color:#a9ccd0;padding:7px 10px;border-radius:20px}
+.big{font-size:2.5rem;font-weight:750;letter-spacing:-.03em;margin:8px 0;color:#ecf6f6}
+.badge{display:inline-block;padding:5px 9px;font-size:.8rem;border-radius:9px;background:#24444a;color:#91e4d3}
+.fail{background:#4b2a2c;color:#ffc9c9}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+td,th{text-align:left;padding:11px;border-bottom:1px solid #32414c;vertical-align:top}
+th{color:#aec1c9;font-size:.83rem}td{overflow-wrap:anywhere}
+.panel{margin-top:18px}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.controls label{margin:0}.controls select{width:auto}
+#status{min-height:25px;margin:18px 0 0;color:#f8d391}
+footer{color:#90a1ac;padding-bottom:35px;font-size:.82rem;line-height:1.6}
+a{color:#8fefd9}p{line-height:1.5}.math{font-family:ui-monospace,Consolas,monospace;font-size:.87rem}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.big{font-size:2rem}header{padding-top:30px}}
+</style></head>
+<body>
+<header><div class="eyebrow">Period Fingerprint Laboratory / Exact Explorer</div>
+<h1>How much geometry can a sequence reveal?</h1>
+<p class="subtitle">Compare two well-formed weighted projective spaces using exact
+BigInt factorial-ratio coefficients. An identical prefix does not prove
+that the spaces have the same dimension. All calculations run in your browser.</p>
+</header>
+<main><section class="grid">
+<div class="card"><label for="left">Space A — comma-separated weights</label>
+<input id="left" value="1,1,1,1,1,5,5,24" spellcheck="false" autocomplete="off">
+<div id="leftInfo" aria-live="polite"></div></div>
+<div class="card"><label for="right">Space B — comma-separated weights</label>
+<input id="right" value="2,2,2,2,3,3,25" spellcheck="false" autocomplete="off">
+<div id="rightInfo" aria-live="polite"></div></div></section>
+<div class="rule"><span class="tag">Exact integer arithmetic · No estimated coefficients</span>
+<div class="controls"><label for="depth">Compare first</label>
+<select id="depth"><option value="1">1 supported degree</option><option value="2" selected>2 supported degrees</option>
+<option value="3">3 supported degrees</option><option value="4">4 supported degrees</option><option value="5">5 supported degrees</option></select>
+<button id="compute">Calculate</button></div></div>
+<div id="status" role="status" aria-live="polite"></div>
+<section class="panel"><h2 style="margin-top:0">Period comparison</h2><div id="comparison"></div></section>
+<section class="panel"><h2 style="margin-top:0">What this result establishes</h2>
+<div id="interpretation"></div></section>
+</main><footer>This browser is an independent visual demonstration, not a general
+geometry reconstruction or proof checker. The Python core owns formal
+certification and bounded-census evidence. Source: 
+<a href="https://github.com/towre676-cloud/period-fingerprint-lab">GitHub</a>.
+Published theory: Coates–Kasprzyk–Veneziale (2023).</footer>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+function parse(id) {
+ const raw=$(id).value.trim();
+ if(!/^\d+(\s*,\s*\d+)*$/.test(raw))throw Error("Weights must be comma-separated positive integers.");
+ const a=raw.split(",").map(s=>Number(s.trim()));
+ if(a.length<2||a.length>30||a.some(x=>!Number.isSafeInteger(x)||x<1))
+   throw Error("Provide 2–30 positive safe-integer weights.");
+ a.sort((x,y)=>x-y);
+ const L=a.reduce((s,x)=>s+x,0);
+ if(L>250)throw Error("Limit total weight to 250 for this browser preview.");
+ function gcd(x,y){while(y){let z=x%y;x=y;y=z}return x}
+ for(let i=0;i<a.length;i++)if(a.filter((_,j)=>j!==i).reduce(gcd,0)!==1)
+   throw Error("Weights fail the omit-one gcd=1 well-formedness condition.");
+ return {a,L,dim:a.length-1};
+}
+function factorial(n){let out=1n;for(let i=2;i<=n;i++)out*=BigInt(i);return out}
+function coeff(w,m){let v=factorial(w.L*m);for(const x of w.a)v/=1n; 
+ let den=w.a.reduce((p,a)=>p*factorial(a*m),1n);
+ return v/den;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function terminal(w){
+ if(w.dim<=2)return w.a.every(x=>x===1);
+ for(let k=2;k<=w.L-2;k++){
+   const sum=w.a.reduce((s,a)=>s+(k*a)%w.L,0);
+   if(sum%w.L!==0)throw Error("Unexpected nonintegral age");
+   const age=sum/w.L;
+   if(age<2||age>w.a.length-2)return false;
+ }
+ return true;
+}
+function info(id,w){
+ $(id).innerHTML='<p class="big">'+w.dim+'<small> dimensions</small></p>'+
+ '<p class="muted">Total weight: '+w.L+' · '+w.a.length+' weights</p>'+
+ '<span class="badge '+(terminal(w)?"":"fail")+'">'+(terminal(w)?"Terminal":"Nonterminal")+'</span>';
+}
+function render(){
+ try{
+  $("status").textContent="";
+  const a=parse("left"), b=parse("right"), n=Number($("depth").value);
+  info("leftInfo",a);info("rightInfo",b);
+  if(a.L!==b.L){$("comparison").innerHTML="";
+   $("interpretation").textContent="Different total weights produce different coefficient support patterns. This pairwise comparison requires equal total weights.";
+   return;}
+  let rows="",matches=0,firstDifference=null;
+  for(let m=0;m<=n;m++){
+   const va=coeff(a,m),vb=coeff(b,m),equal=va===vb;
+   if(m>0&&equal&&firstDifference===null)matches++;
+   if(m>0&&!equal&&firstDifference===null)firstDifference=a.L*m;
+   rows+="<tr><td>"+(a.L*m)+"</td><td class='math'>"+escapeHtml(va.toString())+"</td><td class='math'>"+
+    escapeHtml(vb.toString())+"</td><td>"+(equal?"Equal":"Different")+"</td></tr>";
+  }
+  $("comparison").innerHTML="<div style='overflow:auto'><table><thead><tr><th>Degree</th><th>Space A</th><th>Space B</th><th>Result</th></tr></thead><tbody>"+rows+"</tbody></table></div>";
+  const m="The spaces have dimensions "+a.dim+" and "+b.dim+". ";
+  $("interpretation").textContent=firstDifference!==null?
+    m+"Their coefficients first differ at degree "+firstDifference+" within the displayed range; this is a valid exact pairwise distinguishing witness.":
+    m+"Their first "+n+" positive supported coefficients agree. This is finite-prefix ambiguity only; it does not establish identical infinite quantum periods or uniqueness against all other spaces.";
+ }catch(e){$("status").textContent=e.message;$("comparison").textContent="";$("interpretation").textContent="";$("leftInfo").textContent="";$("rightInfo").textContent="";}
+}
+$("compute").addEventListener("click",render);
+$("depth").addEventListener("change",render);
+render();
+</script></body></html>
