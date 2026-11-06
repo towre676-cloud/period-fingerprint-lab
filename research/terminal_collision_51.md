@@ -7,6 +7,23 @@ are **finite computer-assisted exhaustive claims**, independently replayed
 by separate Python and C++ enumerators. Neither a proof assistant nor an
 external referee has checked the result. Novelty has not been established.
 
+
+## Comparison with one supported coefficient
+
+The analogous *single-supported-coefficient* collision already
+occurs at total weight **9**:
+
+- `(1,1,1,1,1,4)`, dimension 5;
+- `(1,1,2,2,3)`, dimension 4.
+
+Both are well-formed and terminal and share the first supported
+coefficient because `4! = (2!)^2 * 3! = 24`.
+An independent exact enumeration through weight 9 found no
+smaller terminal pair. Thus the first observed minimal thresholds
+are 9 for one supported coefficient and 51 for two supported
+coefficients. For three supported coefficients no terminal
+collision has been found through total weight 70.
+
 ## The primitive denominator identity
 
 Put
