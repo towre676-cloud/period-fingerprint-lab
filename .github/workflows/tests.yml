@@ -186,3 +186,7 @@ jobs:
         run: g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/k5_primes scripts/verify_k5_primecount_segmented.cpp
       - name: Certify K5 nullity >=25 and same-dimension nullity >=24
         run: /tmp/k5_primes
+      - name: Compile exhaustive row-count threshold verifier
+        run: g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/k5_threshold scripts/verify_k5_counting_threshold.cpp
+      - name: Prove sharp row-count thresholds 2866589 and 2866599
+        run: /tmp/k5_threshold
