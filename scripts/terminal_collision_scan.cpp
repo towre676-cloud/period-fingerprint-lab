@@ -115,8 +115,8 @@ int main(int argc,char**argv) {
  int lo=argc>1?atoi(argv[1]):2;
  int hi=argc>2?atoi(argv[2]):51;
  int prefix=argc>3?atoi(argv[3]):2;
- if(lo<2||hi<lo||hi>65||prefix<1||prefix>3) {
-   cerr<<"usage: terminal_scan [min_sum>=2] [max_sum<=65] [prefix 1..3]\n";
+ if(lo<2||hi<lo||hi>70||prefix<1||prefix>3) {
+   cerr<<"usage: terminal_scan [min_sum>=2] [max_sum<=70] [prefix 1..3]\n";
    return 2;
  }
  ios::sync_with_stdio(false);
