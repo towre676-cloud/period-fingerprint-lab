@@ -111,18 +111,19 @@ is **not** yet a genuine rational/integer collision.
 A finite exact-prime-count argument gives
 
 ```
-25,809 <= minimal maximum individual weight for a K5 collision <= 2,867,000
+25,809 <= minimal maximum individual weight for a K5 collision <= 2,866,589
 ```
 
 The lower bound uses full-column-rank certificates over F_65521
-and independently F_65519. The **upper bound** counts every necessary
-factorial prime-valuation row for each of the first five supported
-coefficients. At individual-weight bound 2,867,000 there are at most
-2,866,975 rows for 2,867,000 columns, guaranteeing an integral
-relation. Adding a count-of-weights constraint leaves at least
-24 nullspace dimensions, so **distinct terminal examples of the
-same geometric dimension** are guaranteed. Common unit-weight
-padding proves terminality.
+and independently F_65519. The **upper bound** counts every necessary factorial-prime-valuation
+row for the first five supported coefficients. The first individual-weight
+cap where this raw row-count argument guarantees a relation is **2,866,589**.
+The first cap guaranteeing **same-dimensional terminal spaces** is
+**2,866,599** after adding an all-ones count-of-weights constraint.
+A larger, especially robust certificate at weight 2,867,000 has
+at least 25 kernel dimensions (24 even with the count constraint).
+Common unit-weight padding proves terminality. Exact sieve code scans
+all smaller row-count caps to verify these first-sufficiency thresholds.
 
 This is an **existence proof**, not a fully specified K=5
 weight list or a demonstration of differing dimensions. In particular,
@@ -186,8 +187,8 @@ rank computations and the explicit exact integer relations. These are
 
 A separate exact finite-field proof shows that **four supported coefficients
 cannot collide when all individual weights are at most 1,691** and the
-total weights are equal. The first modular dependence at weight 1,692 is
-not yet an integral factorial identity.
+total weights are equal. An exact integer identity at weight 1,692 has since been reconstructed,
+and the corresponding terminal four-coefficient collision is documented above.
 
 [Read the mathematical proofs and evidence limitations](research/K3_SHARP_WEIGHT_THRESHOLDS.md).
 Run the independent checkers:
