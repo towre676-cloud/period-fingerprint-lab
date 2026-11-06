@@ -63,6 +63,9 @@ def main(argv=None):
     elif args.action == "reconstruct":
         result = reconstruct_from_prefix(args.total_weight, [
             int(t.strip()) for t in args.coefficients.split(",")])
+    elif args.action == "reconstruct-dense":
+        with open(args.path,encoding="utf-8") as stream:
+            result = reconstruct_dense_prefix(json.load(stream))
     elif args.action == "search":
         scan = collision_scan(args.max_sum, args.prefix, args.terminal_only,
                               args.max_dim, args.different_dimensions)
