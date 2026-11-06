@@ -47,3 +47,16 @@ jobs:
           assert a["all_pairs_are_common_partition_of_12"] is True
           assert a["terminal"]==211234
           PY
+
+  three-prefix-frontier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile exact prime-valuation enumerator
+        run: g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/terminal_scan scripts/terminal_collision_scan.cpp
+      - name: Exhaust terminal three-prefix comparisons through weight 70
+        run: |
+          /tmp/terminal_scan 2 70 3 > /tmp/three-prefix-L70.log
+          cat /tmp/three-prefix-L70.log | tail -25
+          ! grep -Eq '^L=[0-9]+.*collisions=[1-9]' /tmp/three-prefix-L70.log
+          grep -Eq '^TOTAL .*collisions=0 different_dimension=0$' /tmp/three-prefix-L70.log
