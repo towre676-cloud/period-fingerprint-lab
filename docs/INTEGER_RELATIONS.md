@@ -47,3 +47,23 @@ print(discover_relation(max_weight=25, prefix=2))
 Potential research: kernel-vector size minimization, integer linear
 programming with bounded multiplicities, choosing dimension mismatch,
 terminality filters, and independence from the brute-force census.
+
+
+## General existence theorem (proved separately, not by bounded experiments)
+
+The exploratory warning above concerns what can be inferred from a
+**particular finite matrix**. A separate asymptotic rank argument
+actually does establish existence of collisions for *every* fixed K:
+let M tend to infinity and use the prime number theorem to guarantee
+M > 1+K*pi(K*M). This makes the full valuation matrix rectangular
+with strictly fewer rows than columns, so a nonzero integral kernel
+exists. Appending twice the old common total weight in unit weights
+makes both resulting spaces well-formed and terminal, while preserving
+the first K supported coefficients. This yields a genuine unconditional
+existence theorem for each finite K, **not** a guarantee that any
+particular small M works.
+
+The complete proof, including terminality of the unit-weight padding,
+is in [research/universal_finite_prefix_ambiguity.md](../research/universal_finite_prefix_ambiguity.md).
+The argument guarantees distinct spaces, not differing dimension for
+arbitrary K. This distinction is essential.
