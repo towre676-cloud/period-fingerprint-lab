@@ -143,3 +143,32 @@ jobs:
           name: k4-compact-terminal-receipt
           path: /tmp/k4_compact_receipt.json
           retention-days: 90
+
+  five-prefix-independent-crosschecks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Check rational proof of effective terminal existence bound
+        run: python scripts/verify_k5_effective_bound_411e8.py
+      - name: Check exact signed-relation verifier against known compact K4 witness
+        run: |
+          python - <<'PY'
+          import json, struct, zlib, base64
+          from pathlib import Path
+          from scripts.verify_signed_relation_fast import verify
+          b85=Path('research/k4_compact_vector.b85').read_text().strip()
+          raw=zlib.decompress(base64.b85decode(b85))
+          vec=struct.unpack('<2000h',raw)
+          signed=[[a,c] for a,c in enumerate(vec,1) if c]
+          result=verify(signed,4)
+          assert result['discrepant_prime_counts']==[0,0,0,0,367]
+          print(json.dumps(result,indent=2))
+          PY
+      - name: Compile independent second-prime K5 rank verifier
+        run: g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/k5_second scripts/verify_k5_second_modulus.cpp
+      - name: Independently prove five-prefix rank through individual weight 25808 over F65519
+        run: /tmp/k5_second 25810 5
