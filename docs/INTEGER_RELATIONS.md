@@ -23,15 +23,13 @@ both be nonempty because the first row has strictly positive entries.
 Adding two weights of 1 to each space makes each well-formed,
 preserves all equalities, and avoids the one-weight degenerate case.
 
-This establishes, **for every finite K**, the existence of distinct
-well-formed weighted projective spaces with matching first K
-nonzero period coefficients: choose M large enough so the number
-of columns M exceeds the number of (finite) valuation constraints.
-However, this crude counting requires a careful bound on the number of
-relevant prime rows as M grows, and that row count can also grow
-with M. The code therefore **does not** claim this argument by itself
-proves nullity for every K. A valid future theorem must construct
-a kernel vector or prove a nontrivial rank bound.
+This is a **conditional construction**: whenever the matrix has
+nonzero integer kernel, it constructs an exact finite-prefix collision.
+The existence of nonzero kernel for every arbitrary K does **not**
+follow merely by increasing M, because the number of prime-valuation
+constraints grows with M as well. A general existence theorem remains
+open here; it requires an explicit construction or a rigorous rank
+bound. The implemented examples are bounded, exactly checked witnesses.
 
 The executable implementation `periodlab.relations` uses exact
 Fraction RREF, integral LCM normalization, and independent
