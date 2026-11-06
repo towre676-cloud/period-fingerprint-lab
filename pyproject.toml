@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "period-fingerprint-lab"
+version = "0.2.0"
+description = "Exact finite period fingerprint reconstruction and collision verification"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [{name = "Period Fingerprint Lab contributors"}]
+dependencies = []
+
+[tool.setuptools.packages.find]
+include = ["periodlab*"]
