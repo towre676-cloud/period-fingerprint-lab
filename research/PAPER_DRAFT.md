@@ -478,3 +478,77 @@ The earlier erroneous exploratory modular rank claim
 at 1929 is explicitly withdrawn, because it used
 truncated integer storage. Only the independently
 validated 1691/1692 threshold is retained.
+
+
+## Appendix C. Substantial reduction of the four-coefficient terminal witness
+
+A new exact integer-lattice construction yields a four-coefficient
+collision of **much lower total weight and dimension** without
+terminality padding. Using the factorial-valuation matrix
+\(V_4(2000)\), 21 independent rational kernel directions
+were reconstructed from modular images by Chinese remaindering.
+An integral change of lattice basis via Hermite normal form,
+followed by exact Gram-matrix LLL, produced an integer relation
+with 706 nonzero signed weight multiplicities, maximum weight
+1990, signed count difference -1, and zero signed weighted sum.
+
+The two resulting multisets have the same weight total
+\[
+ L=6,448,232,
+\]
+with 12,622 and 12,623 weights, respectively. Their weighted
+projective spaces have dimensions **12,621** and **12,622**.
+The first four positive supported coefficients agree exactly;
+the fifth differs at 367 prime valuations.
+
+Crucially, both spaces are *already terminal*: no extra unit
+weights are required. For each side, an independent event-sweep
+algorithm checked **every** \(k=2,\ldots,L-2\), i.e. 6,448,229
+fractional-age conditions. The exact age ranges were
+[2,12,620] and [2,12,621], with no failures.
+The event sweep computes
+\[
+ \operatorname{age}(k)
+ = k-\sum_i \left\lfloor \frac{k a_i}{L}\right\rfloor
+\]
+and accumulates the floor jumps at
+\(\lceil jL/a_i\rceil\), so it needs only integer arithmetic.
+Well-formedness was checked separately through omit-one gcds.
+
+The independent standard-library verifier is
+`scripts/verify_k4_compact.py`, and the exact compressed
+weight relation is `research/k4_compact_vector.b85`
+with its raw decompressed SHA-256 recorded in the source.
+This construction reduces the explicit total weight by
+more than 33 decimal orders of magnitude relative to the
+earlier weight-1692 relation with huge multiplicities.
+
+This is a substantial quantitative improvement, **not a
+proof of minimal total weight or dimension**. The new example
+uses weights through 1990 and therefore does not replace
+the earlier sharp *largest-individual-weight* threshold
+of 1692 for four-term ambiguity.
+
+## Appendix D. Five coefficients: rigorous finite lower bound
+
+An exact valuation-matrix computation over
+\(\mathbb F_{65521}\) gives
+\[
+ \operatorname{rank} V_5(25808)=25808.
+\]
+Full column rank over a finite field certifies full
+rational rank, excluding **all** nontrivial equal-total-weight
+integer factorial-denominator relations with individual
+weights at most 25,808. An independent packed
+\(\mathbb F_2\) implementation finds full rank through
+25,626. The first dependencies in these two finite
+fields appear at 25,809 and 25,627 respectively; such
+dependencies do **not** establish any rational or integral
+factorial identity. Constructing an explicit five-term
+collision remains open in this implementation.
+
+The independently runnable checkers are
+`scripts/verify_k5_gf2.cpp` and
+`scripts/verify_k5_modp.cpp`. The hosted
+`five-prefix-rank-bound` job checks both.
+Originality of the finite rank bound is not established.
