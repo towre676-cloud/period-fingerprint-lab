@@ -6,7 +6,7 @@ See docs/FINITE_RECONSTRUCTION.md for proof and assumptions.
 """
 from fractions import Fraction
 from math import factorial
-from .periods import numerator_at, fingerprint
+from .periods import numerator_at, fingerprint, coefficient_at_degree
 from .weights import WeightedProjective
 
 
@@ -114,3 +114,31 @@ def reconstruct_from_prefix(total_weight, coeffs):
             "dimension": space.dimension,
             "observed_coefficients": len(coeffs),
             "finite_uniqueness_within_class": len(coeffs) >= total_weight}
+
+
+def reconstruct_dense_prefix(dense):
+    """Recover WPS weights without supplying L, given a sufficiently long
+    ordinary t-degree coefficient prefix c_0,c_1,...,c_D.
+
+    This relies on the weighted-projective factorial-ratio class: the first
+    nonzero coefficient after c_0 occurs exactly at degree L=sum(weights).
+    A sufficient data horizon is D >= L*(L-1).
+    """
+    if not isinstance(dense,(list,tuple)) or len(dense)<3:
+        raise ValueError("provide a full dense period prefix")
+    if any(type(c) is not int or c<0 for c in dense) or dense[0]!=1:
+        raise ValueError("dense coefficients must be nonnegative integers, c0=1")
+    L=next((d for d in range(1,len(dense)) if dense[d]!=0),None)
+    if L is None or L<2:
+        raise ValueError("no admissible positive supported coefficient found")
+    if len(dense)-1 < L*(L-1):
+        raise ValueError(f"insufficient dense prefix: need degrees through {L*(L-1)}")
+    supported=[dense[m*L] for m in range(L)]
+    space=reconstruct_weights(L,supported)
+    for d,observed in enumerate(dense):
+        calculated=0 if d%L else coefficient_at_degree(space,d)
+        if observed!=calculated:
+            raise ValueError(f"coefficient inconsistent at t-degree {d}")
+    return {"total_weight":L,"weights":list(space.weights),
+            "dimension":space.dimension,"observed_dense_degrees":len(dense)-1,
+            "uniqueness_within_wps_class":True}
