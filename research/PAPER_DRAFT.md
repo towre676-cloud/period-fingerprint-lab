@@ -552,3 +552,116 @@ The independently runnable checkers are
 `scripts/verify_k5_modp.cpp`. The hosted
 `five-prefix-rank-bound` job checks both.
 Originality of the finite rank bound is not established.
+
+
+## Appendix C. Five supported coefficients: finite exclusion and effective terminal ambiguity
+
+**Theorem C.1 (finite exclusion).** No distinct positive weight
+multisets with the same total weight and with all entries
+at most **25,808** can have identical first five supported
+factorial-ratio period coefficients.
+
+**Computer-assisted proof.** The exact integer matrix V_5(M)
+has one column for each candidate weight a=1,...,M,
+a total-weight row a, and prime valuation rows
+v_p((ma)!) for m=1,...,5 and p<=mM. Two independently
+written full-column rank calculations over the prime fields
+F_65521 and F_65519 give
+`rank V_5(25808)=25808`. Full rank in either
+characteristic implies full rational column rank.
+Any equal-total-weight factorial identity would provide
+a nonzero integer kernel vector, a contradiction.
+The first modular dependence is at 25,809 in both
+odd characteristics, but need not lift to an exact
+integer identity. It has not yet yielded a certified
+five-prefix pair.
+
+**Theorem C.2 (explicit finite existence bound).** There
+exist two distinct *terminal, well-formed weighted
+projective spaces of the same dimension* with equal
+total weight, with all individual weights at most
+**2,866,599**, and identical first five positive
+supported quantum-period coefficients.
+
+**Proof.** Consider V_5(M) as above, now with
+M=2,866,599. There are at most
+
+```
+1 + sum_{m=1}^5 pi(mM)
+```
+
+rows, including the total-weight equation. Direct
+prime enumeration gives the five values
+`207897,395749,577429,755228,930293`, whose sum
+is 2,866,596. Add one further all-ones row enforcing
+that both multisets have the same cardinality. The
+expanded matrix has at most 2,866,598 rows against
+2,866,599 columns. Thus it has a nonzero rational
+kernel, and after clearing denominators a nonzero
+integer kernel. The total-weight equation forces
+both positive and negative components to occur.
+Their factorial denominator products agree for
+m=1,...,5 by unique prime factorization, and
+their weight counts agree by the added all-ones
+row. The two sides are distinct, so represent
+different multisets. Adjoining 2M common unit
+weights to both makes their weighted projective
+spaces well-formed and terminal by the padding
+lemma in Appendix A, preserving the equal total
+weight, the equal dimension and the five period
+coefficients. QED.
+
+**Corollary C.3.** If M_5 is the minimum of the
+maximum individual weight over any pair of
+distinct terminal spaces with equal total weight
+and the same first five supported coefficients, then
+
+```
+                 25,809 <= M_5 <= 2,866,589.
+```
+
+Indeed, for M=2,866,589 the exact prime counts are
+`207897,395749,577427,755224,930290`.
+Their sum is 2,866,587. Including the total-weight
+row leaves 2,866,588 rows against 2,866,589
+columns, forcing a nonzero integer relation.
+The terminal-padding lemma applies again. This
+corollary does not guarantee that the two dimensions
+are different; Theorem C.2 guarantees equality
+of dimensions for a slightly larger maximum weight.
+
+A complete exact sieve of all smaller M verifies
+that these are the **first caps at which the simple
+raw row-count argument alone forces a kernel**:
+2,866,589 for any relation, and 2,866,599 after
+adding a count-of-weights equation. This *does
+not* establish that actual collisions fail at
+smaller weights, and hence does not claim optimal
+maximum weight.
+
+At the convenient nearby cap M=2,867,000, the
+five exact prime counts sum to 2,866,974.
+The matrix has at least 25 rational nullspace
+dimensions, or 24 with the weight-count row.
+The prime census has been independently reproduced
+by full and odd-only Python sieves and a segmented
+C++ sieve. An independent exact full-prefix prime-
+valuation verifier also reproduces the previous
+K3 and K4 signed integer identities.
+
+**Limitation.** This is a constructive *existence proof
+by finite linear algebra*, not an explicit signed
+integer witness. In particular it does not yet
+produce a certified example with five matching
+supported coefficients and different geometric
+dimensions. The genuine first-collision maximum
+weight, smallest total weight, and smallest
+dimension remain open.
+
+Reproducibility:
+`scripts/verify_k5_primecount_existence.py`,
+`scripts/verify_k5_counting_threshold.cpp`,
+`scripts/verify_k5_primecount_segmented.cpp`,
+and `scripts/verify_k5_second_modulus.cpp`.
+The complete scope and proof are recorded in
+`research/K5_PRIMECOUNT_EXISTENCE_2867000.md`.
