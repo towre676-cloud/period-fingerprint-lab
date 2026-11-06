@@ -127,3 +127,19 @@ jobs:
         run: /tmp/k5_gf2 25627 5
       - name: Prime-field rank full through maximum weight 25808
         run: /tmp/k5_modp 25809 5
+
+  compact-four-prefix-certificate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Independent prime-by-prime and all-age verification
+        run: python scripts/verify_k4_compact.py | tee /tmp/k4_compact_receipt.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: k4-compact-terminal-receipt
+          path: /tmp/k4_compact_receipt.json
+          retention-days: 90
