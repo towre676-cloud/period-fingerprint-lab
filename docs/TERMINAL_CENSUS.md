@@ -1,44 +1,49 @@
 # Bounded terminality-constrained collision census
 
 **Scope:** all canonical nondecreasing, well-formed weight multisets
-with total weight `L <= 40`, at least two weights, and at worst
-terminal singularities. The terminality check uses the exact
-Kasprzyk age criterion in dimension >=3 and smoothness in
-dimension <=2. The period fingerprint is the first two **positive**
-nonzero supported coefficients, at degrees `L` and `2L`;
-the support step `L` is part of each fingerprint.
+with total weight `L <= 45`, at least two weights, and at worst
+terminal singularities. Terminality uses the exact Kasprzyk fractional-age
+criterion in dimension ≥3 and smoothness in dimensions ≤2.
+The fingerprint comprises the first two **positive** supported
+coefficients at degrees `L` and `2L`; the support step is included.
 
-## Computed result
+## Results
 
-- Well-formed spaces in unrestricted search: **201,882**.
-- Spaces passing the terminality predicate: **158,816**.
-- Pairs of distinct terminal spaces with the same `(L,c_L,c_(2L))`:
-  **zero**.
-- The unrestricted search has a nonterminal collision already
-  at `L=39` between weights `(1,1,1,1,1,5,5,24)`
-  and `(2,2,2,2,3,3,25)`.
+| Maximum total weight | Well-formed spaces | Terminal spaces | Terminal two-prefix collision pairs |
+|---|---:|---:|---:|
+| 40 | 201,882 | 158,816 | 0 |
+| 45 | **513,020** | **425,291** | **0** |
 
-The finite count and noncollision were independently calculated
-using the legacy partition enumerator and a separate inline
-terminal-age predicate, and are now included as deterministic
-regression assertions against the production `collision_scan`.
-GitHub Actions checks that the implemented search repeats them.
+The unrestricted well-formed search has a *nonterminal* pairwise collision
+at `L=39`, with weights
+`(1,1,1,1,1,5,5,24)` and `(2,2,2,2,3,3,25)`, dimensions 7
+and 6; they first differ at degree 117.
 
-**This proves nothing about total weight 41 or higher**. No
-statement of uniqueness among all terminal weighted projective
-spaces follows from this finite enumeration.
+The bound 45 was independently computed with the legacy partition
+enumerator and a separate inline terminal-age predicate. The standalone
+`verify_census.py` uses a second iterative partition generator and
+an independently written coefficient and terminality evaluator;
+GitHub Actions is configured to check the 45 bound. A successful
+current-HEAD CI run is required before describing the GitHub
+independent replay as completed.
 
 ## Reproduce
 
 ```sh
-python -m unittest tests.test_periodlab -v
-python -m periodlab search --max-sum 40 --prefix 2 --terminal-only
+python verify_census.py --max-sum 45 --prefix 2 \
+  --expect-well-formed 513020 --expect-terminal 425291 \
+  --expect-collisions 0 > terminal-census-45.json
+
+python -m periodlab search --max-sum 45 --prefix 2 --terminal-only
 ```
 
-The result is a *computationally exhaustive statement about a
-finite domain*, subject to correctness of the enumeration and
-terminality implementation. The printed scan JSON gives counts
-and collisions; a standalone independently replayable census
-certificate is still future work. The independent `verify_receipt.py`
-validates individual pair certificates and reconstructions but
-does not certify global census exhaustiveness.
+The production search has a conservative max_sum<=45 bound; the local
+HTTP API limits searches to 40 for responsiveness.
+
+**No global theorem follows from this finite result.** It makes no
+claim about total weight 46 or higher, an unknown unrestricted class
+of terminal spaces, or uniqueness from fewer or differently normalized
+coefficients. Exhaustiveness is relative to the weight-domain
+definition and correctness of the two enumeration implementations.
+The separate receipt verifier checks individual mathematical
+certificates, not global classification.
