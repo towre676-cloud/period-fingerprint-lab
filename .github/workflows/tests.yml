@@ -172,3 +172,17 @@ jobs:
         run: g++ -std=c++20 -O3 -Wall -Wextra -o /tmp/k5_second scripts/verify_k5_second_modulus.cpp
       - name: Independently prove five-prefix rank through individual weight 25808 over F65519
         run: /tmp/k5_second 25810 5
+
+  five-prefix-primecount-existence:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Verify finite prime counts by independent Python full/odd sieves
+        run: python scripts/verify_k5_primecount_existence.py
+      - name: Compile independently implemented segmented C++ prime sieve
+        run: g++ -O3 -std=c++20 -Wall -Wextra -o /tmp/k5_primes scripts/verify_k5_primecount_segmented.cpp
+      - name: Certify K5 nullity >=25 and same-dimension nullity >=24
+        run: /tmp/k5_primes
