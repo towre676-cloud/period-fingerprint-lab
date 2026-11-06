@@ -85,3 +85,28 @@ discovery engine.
 - A function of a finite prefix with a deliberately restricted candidate
   class can achieve smaller bounds. A rigorous claim requires specifying
   that candidate class.
+
+
+## Corollary: recovering an initially unknown support step
+
+Suppose instead we receive the *ordinary dense* quantum period
+coefficients `C_0,C_1,...,C_D` (including zero coefficients at
+all degrees), and it is known **a priori** that these come from
+a well-formed weighted projective space. The factorial-ratio period
+has `C_d=0` unless `L | d`, and `C_L>0`. The first positive
+coefficient after the constant term therefore identifies `L`.
+
+If `D >= L*(L-1)`, then the dense input contains the `L`
+supported coefficients at indices `0,L,...,L*(L-1)`.
+The theorem above reconstructs the entire weight multiset exactly.
+We additionally verify every observed dense coefficient, including
+those at unsupported degrees.
+
+`periodlab.reconstruct.reconstruct_dense_prefix(dense)` implements
+this corollary. It rejects truncations lacking the necessary degree,
+or a single inconsistent nonzero coefficient.
+
+**Scope:** The support-step inference uses the weighted-projective
+factorial-ratio formula. It cannot be applied to arbitrary Fano
+quantum periods or arbitrary sparse sequences without independently
+verifying that class hypothesis.
