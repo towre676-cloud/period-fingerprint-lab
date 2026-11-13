@@ -153,6 +153,8 @@ def shift(p,c):
             out[i+1]+=t
         out[0]+=v
         result=out
+    while len(result)>1 and result[-1]==0:
+        result.pop()
     return result
 
 
