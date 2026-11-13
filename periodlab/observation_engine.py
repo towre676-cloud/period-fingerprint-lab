@@ -110,10 +110,10 @@ def normalize(spec):
             for row in raw:
                 if not isinstance(row, list) or len(row) != n:
                     raise ValueError("inconsistent vector dimensions")
-                vectors.append(tuple(str(rational(x)) for x in row))
+                vectors.append(tuple(rational(x) for x in row))
             if len(vectors) != len(set(vectors)):
                 raise ValueError("duplicate rational vectors")
-            uni = {"kind": "explicit", "vectors": [list(v) for v in sorted(vectors)]}
+            uni = {"kind": "explicit", "vectors": [[str(x) for x in v] for v in sorted(vectors)]}
         else:
             raise ValueError("unknown rational universe")
         names = set()
