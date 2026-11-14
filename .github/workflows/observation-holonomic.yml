@@ -4,6 +4,11 @@ on:
     paths:
       - 'periodlab/observation_design.py'
       - 'periodlab/holonomic.py'
+      - 'periodlab/observation_engine.py'
+      - 'tests/test_observation_engine.py'
+      - 'tests/test_observation_compatibility.py'
+      - 'scripts/replay_observation_compatibility.py'
+      - 'verify_observation_engine.py'
       - 'tests/test_observation_holonomic_bridge.py'
       - 'tests/test_observation_bridge_receipts.py'
       - 'verify_observation_bridge.py'
@@ -13,6 +18,11 @@ on:
     paths:
       - 'periodlab/observation_design.py'
       - 'periodlab/holonomic.py'
+      - 'periodlab/observation_engine.py'
+      - 'tests/test_observation_engine.py'
+      - 'tests/test_observation_compatibility.py'
+      - 'scripts/replay_observation_compatibility.py'
+      - 'verify_observation_engine.py'
       - 'tests/test_observation_holonomic_bridge.py'
       - 'tests/test_observation_bridge_receipts.py'
       - 'verify_observation_bridge.py'
@@ -32,6 +42,10 @@ jobs:
         run: |
           python -m unittest discover -s tests -p 'test_observation_holonomic_bridge.py' -v
           python -m unittest discover -s tests -p 'test_observation_bridge_receipts.py' -v
+          python -m unittest discover -s tests -p 'test_observation_engine.py' -v
+          python -m unittest discover -s tests -p 'test_observation_compatibility.py' -v
+      - name: Replay both formats outside the package
+        run: python -m scripts.replay_observation_compatibility --out /tmp/observation-compatibility
       - name: Create standalone replay inputs
         run: |
           python - <<'PY'
@@ -56,3 +70,4 @@ jobs:
           path: |
             /tmp/period-observation.json
             /tmp/period-holonomic.json
+            /tmp/observation-compatibility/
