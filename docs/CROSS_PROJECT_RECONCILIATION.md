@@ -27,6 +27,13 @@ collisions, the strongest partial panel, and a suggested next index.
 The complexity cap is enforced *before enumeration*; exceeding it raises an
 error and does not issue an optimality certificate.
 
+The Python API accepts `orders` as a nonempty finite sequence of distinct
+positive integers, including lists, tuples and `range`. It sorts indices
+before searching. Booleans, floats, strings, sets, mappings and one-shot
+iterators are rejected. Receipts serialize the canonical indices as a JSON
+array. The full combinatorial cap is enforced before coefficient evaluation;
+it is not relaxed when an early separating panel happens to exist.
+
 Example: the existing two-prefix collision
 
 [

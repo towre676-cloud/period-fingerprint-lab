@@ -22,14 +22,25 @@ class BridgeReceiptTests(unittest.TestCase):
 
     def test_observation_tampering(self):
         r=design_exact_observations([self.a,self.b],[1,2],budget=2)
+        self.assertTrue(independent.verify(r)["valid"])
         for key,val in (("status","separating"),
                         ("panels_examined",1),
                         ("separated_candidate_pairs",1),
                         ("suggested_next_supported_index",3)):
-            t=copy.deepcopy(r)
-            t[key]=val
-            with self.assertRaises(ValueError,key):
-                independent.verify(t)
+            with self.subTest(field=key):
+                t=copy.deepcopy(r)
+                t[key]=val
+                with self.assertRaisesRegex(ValueError, "invalid exact observation claim: " + key):
+                    independent.verify(t)
+
+    def test_observation_signature_corruption(self):
+        r=design_exact_observations([self.a,self.b],[1,2,3],budget=1)
+        for field in ("selected_signatures", "all_allowed_signatures"):
+            with self.subTest(field=field):
+                t=copy.deepcopy(r)
+                t[field][0][0]="0"
+                with self.assertRaisesRegex(ValueError, field):
+                    independent.verify(t)
 
     def test_holonomic_receipt_and_corruption(self):
         r=holonomic_receipt(WeightedProjective.from_weights((1,1,1)),5)

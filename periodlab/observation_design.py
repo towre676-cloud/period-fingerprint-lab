@@ -7,8 +7,9 @@ positive supported coefficient c_m (the ordinary degree is L*m).
 
 We exhaust all allowed nonadaptive panels of size <= budget, with an
 explicit combinatorial-work cap. The returned receipt is independently
-replayable by the repository's standalone verify_receipt.py.
+replayable by the repository's standalone verify_observation_bridge.py.
 """
+from collections.abc import Sequence
 from itertools import combinations
 from math import comb
 
@@ -27,8 +28,8 @@ def _validate(spaces, orders, budget, max_panels):
     total_weight = spaces[0].total_weight
     if any(s.total_weight != total_weight for s in spaces):
         raise ValueError("supported coefficient indices require a common known total weight")
-    if not isinstance(orders, (list, tuple)) or not orders:
-        raise ValueError("provide at least one allowed positive supported index")
+    if not isinstance(orders, Sequence) or isinstance(orders, (str, bytes, bytearray)) or not orders:
+        raise ValueError("provide a nonempty finite sequence of allowed positive supported indices")
     if any(type(m) is not int or m < 1 for m in orders):
         raise ValueError("supported indices must be positive integers")
     if len(set(orders)) != len(orders):
@@ -63,6 +64,12 @@ def _separated_pairs(classes, total):
 
 def design_exact_observations(spaces, orders, budget, *, max_panels=100000):
     """Find a minimum-cardinality separating nonadaptive panel if one fits.
+
+    ``orders`` is a nonempty finite sequence (for example list, tuple, or
+    range) of distinct positive Python integers. Input order is immaterial:
+    indices are sorted for deterministic search. Strings, sets, mappings and
+    one-shot iterators are not accepted. The full panel-count cap is checked
+    before computing any coefficients, even if an early separator exists.
 
     If it does not fit, report the best partial panel (maximum number of
     separated candidate pairs), its exact collision, and the best additional

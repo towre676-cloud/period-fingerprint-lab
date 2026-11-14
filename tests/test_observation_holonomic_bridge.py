@@ -1,5 +1,6 @@
 """Exact independent checks for period observability and holonomic certificates."""
 import unittest
+from unittest.mock import patch
 
 from periodlab.observation_design import design_exact_observations
 from periodlab.holonomic import holonomic_receipt, operator_polynomials
@@ -32,8 +33,24 @@ class ObservationBridgeTests(unittest.TestCase):
         self.assertEqual(r["suggested_next_supported_index"],3)
 
     def test_budget_cap_prevents_false_optimality(self):
-        with self.assertRaisesRegex(ValueError,"no partial optimality result"):
-            design_exact_observations([self.left,self.right],range(1,8),budget=4,max_panels=3)
+        with patch("periodlab.observation_design.coefficient") as compute:
+            with self.assertRaisesRegex(ValueError,"99 candidate panels.*no partial optimality result"):
+                design_exact_observations([self.left,self.right],range(1,8),budget=4,max_panels=3)
+            compute.assert_not_called()
+
+    def test_finite_index_sequences(self):
+        expected=design_exact_observations([self.left,self.right],[1,2,3],budget=1)
+        for orders in ((3,1,2), range(1,4), range(3,0,-1)):
+            with self.subTest(orders=orders):
+                self.assertEqual(design_exact_observations([self.left,self.right],orders,budget=1),expected)
+
+    def test_invalid_index_inputs(self):
+        for orders in ([], (), range(0), [0], [-1], [True], [1.0], ["1"],
+                       [1,1], "123", b"123", bytearray(b"123"), {1,2},
+                       {1:"one"}, iter([1,2]), None):
+            with self.subTest(orders=repr(orders)):
+                with self.assertRaises(ValueError):
+                    design_exact_observations([self.left,self.right],orders,budget=1)
 
     def test_common_support_required(self):
         other=WeightedProjective.from_weights((1,1,1))
