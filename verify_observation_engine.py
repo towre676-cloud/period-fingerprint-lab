@@ -21,6 +21,76 @@ def canonical(record):
     return json.dumps(record, sort_keys=True, separators=(",", ":"))
 
 
+def exact(value):
+    """Parse receipt rationals without admitting floats or booleans."""
+    check(type(value) in (str, int), "rational values must be integers or exact strings")
+    try:
+        return Fraction(value)
+    except (ValueError, ZeroDivisionError) as exc:
+        raise ValueError("invalid exact rational") from exc
+
+
+def verify_spec(spec):
+    """Validate the public contract independently of the discovery normalizer."""
+    check(isinstance(spec, dict) and spec.get("schema")=="periodlab.observation.v1" and
+          spec.get("family") in ("weighted_projective", "rational_linear") and
+          type(spec.get("budget")) is int and isinstance(spec.get("sensors"), list) and
+          0<=spec["budget"]<=len(spec["sensors"])<=64, "invalid specification")
+    u=spec.get("universe")
+    check(isinstance(u, dict), "invalid universe")
+    sensors=spec["sensors"]
+    if spec["family"]=="rational_linear":
+        if u.get("kind")=="all_rational":
+            n=u.get("dimension")
+        else:
+            check(u.get("kind")=="explicit", "unknown rational universe")
+            models=u.get("vectors")
+            check(isinstance(models, list) and 1<=len(models)<=100000 and
+                  isinstance(models[0], list), "invalid finite rational universe")
+            n=len(models[0])
+            check(all(isinstance(row, list) and len(row)==n for row in models),
+                  "inconsistent vector dimensions")
+            for row in models:
+                for value in row:
+                    exact(value)
+        check(type(n) is int and 1<=n<=32, "invalid model dimension")
+        names=set()
+        for sensor in sensors:
+            check(isinstance(sensor, dict), "invalid sensor")
+            name=sensor.get("name")
+            check(isinstance(name, str) and 1<=len(name)<=100 and name not in names,
+                  "empty or duplicate sensor name")
+            names.add(name)
+            row=sensor.get("coefficients")
+            check(isinstance(row, list) and len(row)==n, "invalid sensor dimension")
+            for value in row:
+                exact(value)
+    else:
+        if u.get("kind")=="explicit":
+            models=u.get("weights")
+            check(isinstance(models, list) and 1<=len(models)<=100000 and
+                  all(isinstance(w, list) and eligible(w) for w in models),
+                  "invalid weight universe")
+            L=sum(models[0])
+            check(L<=4000 and all(sum(w)==L for w in models), "invalid weight support")
+        else:
+            check(u.get("kind")=="bounded", "unknown weighted-projective universe")
+            L=u.get("total_weight")
+            dim=u.get("max_dimension")
+            check(type(L) is int and 2<=L<=45 and
+                  (dim is None or type(dim) is int and 1<=dim<L) and
+                  type(u.get("terminal_only")) is bool, "invalid bounded universe")
+        indices=[]
+        for sensor in sensors:
+            check(isinstance(sensor, dict), "invalid sensor")
+            m=sensor.get("supported_index")
+            check(type(m) is int and m>=1 and L*m<=4000 and
+                  type(sensor.get("degree")) is int and sensor["degree"]==L*m,
+                  "invalid degree")
+            indices.append(m)
+        check(len(set(indices))==len(indices), "duplicate supported indices")
+
+
 def rank(rows, n):
     rows = [[Fraction(x) for x in row] for row in rows]
     pos = 0
@@ -42,7 +112,7 @@ def rank(rows, n):
 def verify_linear(spec, result):
     n = spec["universe"]["dimension"]
     budget = spec["budget"]
-    rows = [[Fraction(v) for v in s["coefficients"]] for s in spec["sensors"]]
+    rows = [[exact(v) for v in s["coefficients"]] for s in spec["sensors"]]
     check(1 <= n <= 32 and all(len(row)==n for row in rows), "invalid model dimension")
     r = rank(rows[:budget], n)
     check(result["rank"]==r and result["kernel_dimension"]==n-r and
@@ -50,7 +120,7 @@ def verify_linear(spec, result):
     if r == n:
         check(result["status"]=="linear_reconstruction_theorem", "false theorem")
         idx = result["basis_sensor_positions"]
-        inv = [[Fraction(v) for v in row] for row in result["inverse_matrix"]]
+        inv = [[exact(v) for v in row] for row in result["inverse_matrix"]]
         check(len(idx)==len(set(idx))==n and all(1<=k<=budget for k in idx) and
               len(inv)==n and all(len(row)==n for row in inv), "invalid inverse shape")
         for i in range(n):
@@ -60,8 +130,8 @@ def verify_linear(spec, result):
         return
     check(result["status"]=="exact_collision", "missing rank-deficiency witness")
     w = result["witness"]
-    left = [Fraction(x) for x in w["left"]]
-    right = [Fraction(x) for x in w["right"]]
+    left = [exact(x) for x in w["left"]]
+    right = [exact(x) for x in w["right"]]
     check(len(left)==len(right)==n and left != right and
           w["shared_observations"]==["0"]*budget, "bad witness")
     for row in rows[:budget]:
@@ -75,9 +145,9 @@ def verify_linear(spec, result):
     else:
         check(separator is not None and separator["sensor_position"]==first+1 and
               separator["sensor"]==spec["sensors"][first] and
-              Fraction(separator["left_value"])==sum(a*b for a,b in zip(rows[first],left)) and
-              Fraction(separator["right_value"])==sum(a*b for a,b in zip(rows[first],right)) and
-              separator["left_value"]!=separator["right_value"], "false separator")
+              exact(separator["left_value"])==sum(a*b for a,b in zip(rows[first],left)) and
+              exact(separator["right_value"])==sum(a*b for a,b in zip(rows[first],right)) and
+              exact(separator["left_value"])!=exact(separator["right_value"]), "false separator")
     completion = result["minimum_completion"]
     full = rank(rows,n)
     check(completion["full_catalog_rank"]==full and
@@ -164,15 +234,18 @@ def verify_finite(spec,result):
             check(all(eligible(w) for w in models) and
                   len(set(map(sum,models)))==1,"invalid weight universe")
         else:
-            models=[tuple(Fraction(v) for v in w) for w in u["vectors"]]
+            models=[tuple(exact(v) for v in w) for w in u["vectors"]]
     else:
         check(family=="weighted_projective","invalid bounded universe")
         L=u["total_weight"]
         check(type(L) is int and 2<=L<=45,"unbounded candidate claim")
-        models=[w for w in weight_partitions(L)
-                if eligible(w) and
+        models=[]
+        for w in weight_partitions(L):
+            if (eligible(w) and
                 (u["max_dimension"] is None or len(w)-1<=u["max_dimension"]) and
-                (not u["terminal_only"] or terminal(w))]
+                (not u["terminal_only"] or terminal(w))):
+                models.append(w)
+                check(len(models)<=100000, "bounded candidate count exceeds 100000")
     check(bool(models) and len(models)==len(set(models)) and models==sorted(models),
           "noncanonical or duplicate models")
     sensors=spec["sensors"]
@@ -190,7 +263,7 @@ def verify_finite(spec,result):
                   {s["supported_index"] for s in sensors[:budget]}),
               "source":"docs/FINITE_RECONSTRUCTION.md"}, "wrong theorem scope")
     else:
-        rows=[[Fraction(v) for v in s["coefficients"]] for s in sensors]
+        rows=[[exact(v) for v in s["coefficients"]] for s in sensors]
         readings=[[str(sum(a*b for a,b in zip(row,w))) for row in rows] for w in models]
     digest=sha256()
     for w,reading in zip(models,readings):
@@ -200,19 +273,19 @@ def verify_finite(spec,result):
     groups=defaultdict(list)
     for i,reading in enumerate(readings):
         groups[tuple(reading[:budget])].append(i)
-    pairs=[(i,j) for group in groups.values() for i,j in combinations(group,2)]
+    pair_count=sum(len(group)*(len(group)-1)//2 for group in groups.values())
     check(result["model_count"]==len(models) and
           result["fingerprint_count"]==len(groups) and
-          result["ambiguous_pair_count"]==len(pairs) and
+          result["ambiguous_pair_count"]==pair_count and
           result["table_sha256"]==digest.hexdigest(),"candidate census failed")
-    if not pairs:
+    if not pair_count:
         check(result["status"]=="finite_reconstruction","false collision status")
         return
     check(result["status"]=="exact_collision","false uniqueness")
     witness=result["witness"]
     a,b=witness["left"],witness["right"]
     if family=="rational_linear":
-        a,b=tuple(map(Fraction,a)),tuple(map(Fraction,b))
+        a,b=tuple(map(exact,a)),tuple(map(exact,b))
     else:
         a,b=tuple(a),tuple(b)
     check(a!=b and a in models and b in models,"witness outside model class")
@@ -242,7 +315,8 @@ def verify_finite(spec,result):
                   "worst_remaining_fingerprint_class":worst})
     check(result["best_next"]==(best[1] if best else None),"false sensor optimization")
     completion=result["minimum_completion"]
-    if len(pairs)<=10000 and len(sensors)-budget<=12:
+    if pair_count<=10000 and len(sensors)-budget<=12:
+        pairs=[(i,j) for group in groups.values() for i,j in combinations(group,2)]
         found=None
         for size in range(1,len(sensors)-budget+1):
             for picks in combinations(range(budget,len(sensors)),size):
@@ -264,10 +338,8 @@ def verify(receipt):
     check(isinstance(receipt,dict) and set(receipt)=={"spec","result"},
           "invalid receipt")
     spec,result=receipt["spec"],receipt["result"]
-    check(spec.get("schema")=="periodlab.observation.v1" and
-          spec.get("family") in ("weighted_projective","rational_linear") and
-          type(spec.get("budget")) is int and isinstance(spec.get("sensors"),list) and
-          0<=spec["budget"]<=len(spec["sensors"])<=64,"invalid specification")
+    verify_spec(spec)
+    check(isinstance(result, dict), "invalid result")
     if spec["family"]=="rational_linear" and spec["universe"]["kind"]=="all_rational":
         verify_linear(spec,result)
         scope="all rational vectors of the stated dimension"
