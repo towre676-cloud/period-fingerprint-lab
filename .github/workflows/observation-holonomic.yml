@@ -1,0 +1,73 @@
+name: Exact observation and holonomic bridge
+on:
+  pull_request:
+    paths:
+      - 'periodlab/observation_design.py'
+      - 'periodlab/holonomic.py'
+      - 'periodlab/observation_engine.py'
+      - 'tests/test_observation_engine.py'
+      - 'tests/test_observation_compatibility.py'
+      - 'scripts/replay_observation_compatibility.py'
+      - 'verify_observation_engine.py'
+      - 'tests/test_observation_holonomic_bridge.py'
+      - 'tests/test_observation_bridge_receipts.py'
+      - 'verify_observation_bridge.py'
+      - 'docs/CROSS_PROJECT_RECONCILIATION.md'
+      - '.github/workflows/observation-holonomic.yml'
+  push:
+    paths:
+      - 'periodlab/observation_design.py'
+      - 'periodlab/holonomic.py'
+      - 'periodlab/observation_engine.py'
+      - 'tests/test_observation_engine.py'
+      - 'tests/test_observation_compatibility.py'
+      - 'scripts/replay_observation_compatibility.py'
+      - 'verify_observation_engine.py'
+      - 'tests/test_observation_holonomic_bridge.py'
+      - 'tests/test_observation_bridge_receipts.py'
+      - 'verify_observation_bridge.py'
+      - 'docs/CROSS_PROJECT_RECONCILIATION.md'
+      - '.github/workflows/observation-holonomic.yml'
+  workflow_dispatch:
+jobs:
+  exact-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test exact observations and holonomic identities
+        run: |
+          python -m unittest discover -s tests -p 'test_observation_holonomic_bridge.py' -v
+          python -m unittest discover -s tests -p 'test_observation_bridge_receipts.py' -v
+          python -m unittest discover -s tests -p 'test_observation_engine.py' -v
+          python -m unittest discover -s tests -p 'test_observation_compatibility.py' -v
+      - name: Replay both formats outside the package
+        run: python -m scripts.replay_observation_compatibility --out /tmp/observation-compatibility
+      - name: Create standalone replay inputs
+        run: |
+          python - <<'PY'
+          import json
+          from periodlab.weights import WeightedProjective as W
+          from periodlab.observation_design import design_exact_observations
+          from periodlab.holonomic import holonomic_receipt
+          a=W.from_weights((1,1,1,1,1,5,5,24))
+          b=W.from_weights((2,2,2,2,3,3,25))
+          with open('/tmp/period-observation.json','w') as out:
+              json.dump(design_exact_observations([a,b],[1,2,3],1),out,sort_keys=True)
+          with open('/tmp/period-holonomic.json','w') as out:
+              json.dump(holonomic_receipt(W.from_weights((1,1,1)),5),out,sort_keys=True)
+          PY
+      - name: Independently replay both receipts
+        run: |
+          python verify_observation_bridge.py /tmp/period-observation.json
+          python verify_observation_bridge.py /tmp/period-holonomic.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exact-period-observation-operator-receipts
+          path: |
+            /tmp/period-observation.json
+            /tmp/period-holonomic.json
+            /tmp/observation-compatibility/
