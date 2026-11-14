@@ -1,0 +1,1 @@
+{"family":"rational_linear","universe":{"kind":"all_rational","dimension":3},"sensors":[{"name":"sum","coefficients":[1,1,1]},{"name":"x-y","coefficients":[1,-1,0]},{"name":"z","coefficients":[0,0,1]},{"name":"x","coefficients":[1,0,0]}],"budget":2}
